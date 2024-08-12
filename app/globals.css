@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+
+@media (max-width: 640px) {
+  th, td {
+    font-size: 0.8rem; /* Adjust font size for small screens */
+    padding: 0.5rem;   /* Adjust padding */
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1024px) {
+  th, td {
+    font-size: 0.875rem;
+    padding: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1440px) {
+  th, td {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  th, td {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+}
+
+
+/* Для вертикального скроллбара */
+::-webkit-scrollbar {
+  width: 4px; /* Устанавливаем ширину скроллбара */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Цвет дорожки */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Цвет ползунка */
+  border-radius: 10px; /* Закругляем ползунок */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Цвет ползунка при наведении */
+}
+
+/* Hide horizontal scrollbar for mobile */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    height: 0; /* Hide horizontal scrollbar on mobile */
+  }
+
+  /* Additional mobile-specific styling can go here */
+}
