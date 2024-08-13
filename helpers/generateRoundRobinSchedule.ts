@@ -6,7 +6,7 @@ const generateRoundRobinSchedule = (teams: Team[]): Match[][] => {
     const isOdd = numTeams % 2 !== 0;
 
     if (isOdd) {
-        teams.push({ id: -1, name: 'Bye', image: '', entity: -1 });
+        teams.push({ id: -1, name: 'Bye', image: '', entity: -1, position: -1 });
     }
 
     const totalTeams = teams.length;

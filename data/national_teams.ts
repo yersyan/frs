@@ -1,6 +1,6 @@
-import { Team } from "@/types/interfaces";
+import {NationalTeam} from "@/types/interfaces";
 
-const national_teams: Team[] = [
+const national_teams: NationalTeam[] = [
     {
         "id": 1,
         "name": "Argentina",

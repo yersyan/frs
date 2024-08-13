@@ -1,15 +1,25 @@
 import countries from "@/data/countries";
-// import clubs from "@/data/clubs";
 import axios from "axios";
 import Clubs from "@/components/Clubs";
+import {Team} from "@/types/interfaces";
 
 export default async function TeamsPage() {
 
-  const clubs = await axios.get("https://comp.uefa.com/v2/coefficients?coefficientRange=OVERALL&coefficientType=MEN_CLUB&language=EN&page=1&pagesize=500&seasonYear=2025")
+  const data = await axios.get("https://comp.uefa.com/v2/coefficients?coefficientRange=OVERALL&coefficientType=MEN_CLUB&language=EN&page=1&pagesize=500&seasonYear=2025")
+
+  const clubs: Team[] = data.data.data.members.map((club: any) => {
+      return {
+          id: +club.member.id,
+          name: club.member.displayName,
+          entity: club.member.countryName,
+          image: club.member.logoUrl,
+          position: club.overallRanking.position
+      }
+  })
 
   return (
     <main>
-        <Clubs entities={countries} clubs={clubs.data.data.members}/>
+        <Clubs entities={countries} clubs={clubs}/>
     </main>
   );
 }

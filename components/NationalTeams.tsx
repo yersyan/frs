@@ -5,9 +5,8 @@ import {Entity, NationalTeam} from "@/types/interfaces";
 import Link from "next/link";
 import Image from 'next/image';
 import EntityFilter from "@/components/EntityFilter";
-import {CLUBS_PAGE, HOME_PAGE, NATIONAL_TEAMS_PAGE, SIMULATOR_PAGE} from "@/urls/routes";
+import {CLUBS_PAGE, HOME_PAGE, SIMULATOR_PAGE} from "@/urls/routes";
 import {MdDelete} from "react-icons/md";
-import {usePathname} from "next/navigation";
 
 interface TeamsProps {
     entities: Entity[]
@@ -15,12 +14,11 @@ interface TeamsProps {
 }
 
 const NationalTeams: FC<TeamsProps> = ({entities, nationalTeams}) => {
-    const pathname = usePathname()
-    const ntp = pathname === NATIONAL_TEAMS_PAGE
+
     const [teams] = useState<NationalTeam[]>(nationalTeams);
     const [leftTeams, setLeftTeams] = useState<NationalTeam[]>(teams);
     const [rightTeams, setRightTeams] = useState<NationalTeam[]>([]);
-    const [selectedConfederation, setSelectedConfederation] = useState<number>(0);
+    const [selectedConfederation, setSelectedConfederation] = useState<number | string>(0);
 
     useEffect(() => {
         localStorage.setItem('rightTeams', JSON.stringify(rightTeams));
@@ -36,7 +34,7 @@ const NationalTeams: FC<TeamsProps> = ({entities, nationalTeams}) => {
         setLeftTeams([...leftTeams, team]);
     };
 
-    const handleConfederationChange = (id: number) => {
+    const handleConfederationChange = (id: number | string) => {
         setSelectedConfederation(id);
     };
 
@@ -52,7 +50,7 @@ const NationalTeams: FC<TeamsProps> = ({entities, nationalTeams}) => {
 
                 <div className="bg-white shadow-lg p-2 w-full">
                     <div className="flex items-center justify-between mb-2 p-2">
-                        <h2 className="font-bold">{ntp ? "National Teams" : "Clubs"}</h2>
+                        <h2 className="font-bold">National Teams</h2>
                         <div className="flex gap-2">
                             <Link
                                 href={HOME_PAGE}

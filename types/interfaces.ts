@@ -45,6 +45,10 @@ export interface Club {
     seasonRankings: any
 }
 
+export interface Team extends NationalTeam {
+    position: number
+}
+
 export interface Match {
     home: Team;
     away: Team;
