@@ -40,7 +40,7 @@ const Clubs: FC<ClubsProps> = ({entities, clubs}) => {
 
     const filteredLeftTeams = selectedConfederation === ""
         ? leftTeams.filter(team => team.position <= 32)
-        : leftTeams.filter(team => team.name === selectedConfederation);
+        : leftTeams.filter(team => team.entity === selectedConfederation);
 
     const sortedFilteredLeftTeams = filteredLeftTeams.sort((a, b) => a.position - b.position);
 
