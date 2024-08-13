@@ -119,7 +119,7 @@ const Clubs: FC<ClubsProps> = ({entities, clubs}) => {
                                                className="rounded-sm"/>
                                         <h2 className="text-sm font-semibold">{team.name}</h2>
                                     </div>
-                                    <p className="text-xs text-gray-600">Country: {team.name}</p>
+                                    <p className="text-xs text-gray-600">Country: {team.entity}</p>
                                     <p className="text-xs text-gray-600">Ranking: {Math.round(team.id)}</p>
                                 </div>
                                 <button
