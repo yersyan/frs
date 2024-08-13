@@ -1,11 +1,11 @@
-import Teams from "@/components/Teams";
+import NationalTeams from "@/components/NationalTeams";
 import national_teams from "@/data/national_teams";
 import confederations from "@/data/confedertions";
 
-export default function TeamsPage() {
+export default function NationalTeamsPage() {
   return (
     <main>
-        <Teams entityData={confederations} teamsData={national_teams}/>
+        <NationalTeams entities={confederations} nationalTeams={national_teams}/>
     </main>
   );
 }

@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['api.fifa.com'], // Add your image source domain if necessary
+        domains: ['api.fifa.com', "img.uefa.com"], // Add your image source domain if necessary
     },
 };
 
