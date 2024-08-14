@@ -23,9 +23,9 @@ const simulateMatch = (
     const updatedMatches = matches.map((round, rIndex) =>
         round.map((match, mIndex) => {
             if (rIndex === roundIndex && mIndex === matchIndex) {
-                const homeRating = match.home.id || 0;
-                const awayRating = match.away.id || 0;
-                const ratingDifference = match.home.id - match.away.id;
+                const homeRating = match.home.position || 0;
+                const awayRating = match.away.position || 0;
+                const ratingDifference = match.home.position - match.away.position;
 
                 const homeGoals = calculateGoals(-ratingDifference, true);
                 const awayGoals = calculateGoals(ratingDifference, false);

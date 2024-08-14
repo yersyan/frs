@@ -7,7 +7,7 @@ export interface NationalTeam {
     id: number;
     name: string;
     image: string;
-    entity: number
+    entity: number | string
 }
 
 export interface Club {

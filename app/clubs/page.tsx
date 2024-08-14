@@ -1,7 +1,7 @@
 import countries from "@/data/countries";
 import axios from "axios";
-import Clubs from "@/components/Clubs";
 import {Team} from "@/types/interfaces";
+import Teams from "@/components/Teams";
 
 export default async function TeamsPage() {
 
@@ -19,7 +19,7 @@ export default async function TeamsPage() {
 
   return (
     <main>
-        <Clubs entities={countries} clubs={clubs}/>
+        <Teams entities={countries} teamsData={clubs}/>
     </main>
   );
 }

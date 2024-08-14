@@ -8,17 +8,17 @@ import EntityFilter from "@/components/EntityFilter";
 import {CLUBS_PAGE, HOME_PAGE, SIMULATOR_PAGE} from "@/urls/routes";
 import {MdDelete} from "react-icons/md";
 
-interface ClubsProps {
+interface TeamProps {
     entities: Entity[]
-    clubs: Team[]
+    teamsData: Team[]
 }
 
-const Clubs: FC<ClubsProps> = ({entities, clubs}) => {
+const Teams: FC<TeamProps> = ({entities, teamsData}) => {
 
-    const [teams] = useState<Team[]>(clubs);
+    const [teams] = useState<Team[]>(teamsData);
     const [leftTeams, setLeftTeams] = useState<Team[]>(teams);
     const [rightTeams, setRightTeams] = useState<Team[]>([]);
-    const [selectedConfederation, setSelectedConfederation] = useState<number | string>("");
+    const [selectedConfederation, setSelectedConfederation] = useState<string>("");
 
     useEffect(() => {
         localStorage.setItem('rightTeams', JSON.stringify(rightTeams));
@@ -34,7 +34,7 @@ const Clubs: FC<ClubsProps> = ({entities, clubs}) => {
         setLeftTeams([...leftTeams, team]);
     };
 
-    const handleConfederationChange = (name: number | string) => {
+    const handleConfederationChange = (name: string) => {
         setSelectedConfederation(name);
     };
 
@@ -50,7 +50,7 @@ const Clubs: FC<ClubsProps> = ({entities, clubs}) => {
 
                 <div className="bg-white shadow-lg p-2 w-full">
                     <div className="flex items-center justify-between mb-2 p-2">
-                        <h2 className="font-bold">Clubs</h2>
+                        <h2 className="font-bold">Teams</h2>
                         <div className="flex gap-2">
                             <Link
                                 href={HOME_PAGE}
@@ -71,7 +71,6 @@ const Clubs: FC<ClubsProps> = ({entities, clubs}) => {
                             entities={entities}
                             selectedEntity={selectedConfederation}
                             onEntityChange={handleConfederationChange}
-                            club
                         />
                     </div>
                     <ul className="flex flex-wrap overflow-auto max-h-[calc(100vh-128px)] gap-1">
@@ -89,7 +88,7 @@ const Clubs: FC<ClubsProps> = ({entities, clubs}) => {
                                            className="rounded-sm"/>
                                     <h2 className="text-sm font-semibold">{team.name}</h2>
                                 </div>
-                                <p className="text-xs text-gray-600">Country: {team.name}</p>
+                                <p className="text-xs text-gray-600">Entity: {team.entity}</p>
                                 <p className="text-xs text-gray-600">Ranking: {Math.round(team.position)}</p>
                             </li>
                         ))}
@@ -119,7 +118,7 @@ const Clubs: FC<ClubsProps> = ({entities, clubs}) => {
                                                className="rounded-sm"/>
                                         <h2 className="text-sm font-semibold">{team.name}</h2>
                                     </div>
-                                    <p className="text-xs text-gray-600">Country: {team.entity}</p>
+                                    <p className="text-xs text-gray-600">Entity: {team.entity}</p>
                                     <p className="text-xs text-gray-600">Ranking: {Math.round(team.id)}</p>
                                 </div>
                                 <button
@@ -137,4 +136,4 @@ const Clubs: FC<ClubsProps> = ({entities, clubs}) => {
     );
 };
 
-export default Clubs;
+export default Teams;
