@@ -15,6 +15,10 @@ const simulateMatch = (
         const ratingFactor = ratingDifference / 12; // Adjust the impact of rating difference
         const homeAdvantage = isHome ? Math.round(Math.random()) : 0; // Home team advantage
         let maximum = Math.max(1, Math.round(baseGoals + ratingFactor + homeAdvantage))
+        if(maximum > 21){
+            maximum = 21
+        }
+        console.log(maximum)
         let maxRandom = Math.round(Math.random() * (1 + maximum))
 
         return generateAndPickRandomNumber(Math.round(maximum / 3), maxRandom)

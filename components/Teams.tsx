@@ -5,7 +5,7 @@ import {Entity, Team} from "@/types/interfaces";
 import Link from "next/link";
 import Image from 'next/image';
 import EntityFilter from "@/components/EntityFilter";
-import {CLUBS_PAGE, HOME_PAGE, SIMULATOR_PAGE} from "@/urls/routes";
+import {CLUBS_PAGE, HOME_PAGE, NATIONAL_TOURNAMENTS_PAGE, SIMULATOR_PAGE} from "@/urls/routes";
 import {MdDelete} from "react-icons/md";
 
 interface TeamProps {
@@ -64,6 +64,12 @@ const Teams: FC<TeamProps> = ({entities, teamsData}) => {
                             >
                                 Clubs
                             </Link>
+                            <Link
+                                href={NATIONAL_TOURNAMENTS_PAGE}
+                                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 text-xs"
+                            >
+                                National tournaments
+                            </Link>
                         </div>
                     </div>
                     <div className="bg-white shadow-lg p-2 mb-2">
@@ -119,7 +125,7 @@ const Teams: FC<TeamProps> = ({entities, teamsData}) => {
                                         <h2 className="text-sm font-semibold">{team.name}</h2>
                                     </div>
                                     <p className="text-xs text-gray-600">Entity: {team.entity}</p>
-                                    <p className="text-xs text-gray-600">Ranking: {Math.round(team.id)}</p>
+                                    <p className="text-xs text-gray-600">Ranking: {Math.round(team.position)}</p>
                                 </div>
                                 <button
                                     className="ml-4 text-red-500 p-1 rounded text-xl"

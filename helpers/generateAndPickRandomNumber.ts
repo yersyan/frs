@@ -1,4 +1,5 @@
 function generateAndPickRandomNumber(num1: number, num2: number): number {
+
     const result: number[] = [];
 
     // Добавляем числа от 0 до num1 - 1
