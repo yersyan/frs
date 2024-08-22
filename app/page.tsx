@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from "next/link";
-import {CLUBS_PAGE, NATIONAL_TEAMS_PAGE, NATIONAL_TOURNAMENTS_PAGE} from "@/urls/routes";
+import {CLUBS_PAGE, NATIONAL_TEAMS_PAGE} from "@/urls/routes";
 
 const HomePage = () => {
     return (
@@ -21,12 +21,6 @@ const HomePage = () => {
                         className="block px-4 py-2 text-center text-sm sm:text-base md:text-lg lg:text-xl bg-green-500 text-white rounded hover:bg-green-700 transition-colors duration-300 mx-2 sm:mx-4 md:mx-6"
                     >
                         Clubs
-                    </Link>
-                    <Link
-                        href={NATIONAL_TOURNAMENTS_PAGE}
-                        className="block px-4 py-2 text-center text-sm sm:text-base md:text-lg lg:text-xl bg-red-500 text-white rounded hover:bg-red-700 transition-colors duration-300 mx-2 sm:mx-4 md:mx-6"
-                    >
-                        National Tournaments
                     </Link>
                 </div>
             </div>

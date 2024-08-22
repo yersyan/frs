@@ -7,7 +7,7 @@ import generateRoundRobinSchedule from "@/helpers/generateRoundRobinSchedule";
 import simulateMatch from "@/helpers/simulateMatch";
 import sortTeams from "@/helpers/sortTeams";
 import StandingsTable from "@/components/StandingsTable";
-import {CLUBS_PAGE, HOME_PAGE, NATIONAL_TEAMS_PAGE} from "@/urls/routes";
+import {HOME_PAGE, NATIONAL_TEAMS_PAGE, CLUBS_PAGE} from "@/urls/routes";
 import Link from "next/link";
 
 const Simulator: FC = () => {

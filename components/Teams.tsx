@@ -5,7 +5,7 @@ import {Entity, Team} from "@/types/interfaces";
 import Link from "next/link";
 import Image from 'next/image';
 import EntityFilter from "@/components/EntityFilter";
-import {CLUBS_PAGE, HOME_PAGE, NATIONAL_TOURNAMENTS_PAGE, SIMULATOR_PAGE} from "@/urls/routes";
+import {CLUBS_PAGE, HOME_PAGE, SIMULATOR_PAGE} from "@/urls/routes";
 import {MdDelete} from "react-icons/md";
 
 interface TeamProps {
@@ -39,10 +39,9 @@ const Teams: FC<TeamProps> = ({entities, teamsData}) => {
     };
 
     const filteredLeftTeams = selectedConfederation === ""
-        ? leftTeams.filter(team => team.position <= 32)
-        : leftTeams.filter(team => team.entity === selectedConfederation);
+        ? leftTeams.filter(team => team.position <= 32).sort((a, b) => a.position - b.position).filter((_, index) => index < 32)
+        : leftTeams.filter(team => team.entity === selectedConfederation).sort((a, b) => a.position - b.position);
 
-    const sortedFilteredLeftTeams = filteredLeftTeams.sort((a, b) => a.position - b.position);
 
     return (
         <div className="bg-gray-100 p-4 h-screen overflow-auto md:overflow-hidden">
@@ -64,12 +63,6 @@ const Teams: FC<TeamProps> = ({entities, teamsData}) => {
                             >
                                 Clubs
                             </Link>
-                            <Link
-                                href={NATIONAL_TOURNAMENTS_PAGE}
-                                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700 text-xs"
-                            >
-                                National tournaments
-                            </Link>
                         </div>
                     </div>
                     <div className="bg-white shadow-lg p-2 mb-2">
@@ -79,8 +72,8 @@ const Teams: FC<TeamProps> = ({entities, teamsData}) => {
                             onEntityChange={handleConfederationChange}
                         />
                     </div>
-                    <ul className="flex flex-wrap overflow-auto max-h-[calc(100vh-128px)] gap-1">
-                        {sortedFilteredLeftTeams.map((team: Team) => (
+                    <ul className="flex flex-wrap overflow-auto max-h-[calc(100vh-220px)] gap-1">
+                        {filteredLeftTeams.map((team: Team) => (
                             <li
                                 key={team.id}
                                 className="bg-gray-50 rounded shadow-md overflow-hidden cursor-pointer p-2
