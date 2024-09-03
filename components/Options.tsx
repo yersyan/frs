@@ -4,19 +4,20 @@ import React, {useEffect, useState} from 'react';
 
 const Options = () => {
     const [gamesOption, setGamesOption] = useState<number>(1);  // State to track number of games (1 or 2)
-    const go = parseInt(localStorage.getItem("gamesOption") || "1");
+
+    useEffect(() => {
+        const storedGamesOption = localStorage.getItem("gamesOption");
+        if (storedGamesOption) {
+            setGamesOption(parseInt(storedGamesOption));
+        }
+    }, []);
+
     // Handle change of radio button selection
     const handleGamesOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedGamesOption = parseInt(event.target.value);
         setGamesOption(selectedGamesOption);
         localStorage.setItem('gamesOption', selectedGamesOption.toString());  // Store the number of games in localStorage
     };
-
-    useEffect(() => {
-        if(go){
-            setGamesOption(Number(go))
-        }
-    }, [])
 
     return (
         <div className="mb-4">
