@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 
 const Options = () => {
     const [gamesOption, setGamesOption] = useState<number>(1);  // State to track number of games (1 or 2)
-    const go = JSON.parse(localStorage.getItem('gamesOption')) || 1
+    const go = parseInt(localStorage.getItem("gamesOption") || "1");
     // Handle change of radio button selection
     const handleGamesOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedGamesOption = parseInt(event.target.value);
