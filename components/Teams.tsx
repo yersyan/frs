@@ -5,7 +5,7 @@ import {Entity, Team} from "@/types/interfaces";
 import Link from "next/link";
 import Image from 'next/image';
 import EntityFilter from "@/components/EntityFilter";
-import {CLUBS_PAGE, HOME_PAGE, SIMULATOR_PAGE} from "@/urls/routes";
+import {CLUBS_PAGE, HOME_PAGE, SIMULATOR_PAGE, TOURNAMENT_OPTIONS_PAGE} from "@/urls/routes";
 import {MdDelete} from "react-icons/md";
 
 interface TeamProps {
@@ -22,6 +22,7 @@ const Teams: FC<TeamProps> = ({entities, teamsData}) => {
 
     useEffect(() => {
         localStorage.setItem('rightTeams', JSON.stringify(rightTeams));
+        localStorage.removeItem('gamesOption')
     }, [rightTeams]);
 
     const handleTeamClick = (team: Team) => {
@@ -97,11 +98,11 @@ const Teams: FC<TeamProps> = ({entities, teamsData}) => {
                 <div className="bg-gray-200 shadow-lg p-2">
                     <div className="flex items-center justify-between mb-2 p-2">
                         <h2 className="font-bold">Selected Teams</h2>
-                        {rightTeams.length >= 3 && (
+                        {rightTeams.length >= 2 && (
                             <div>
-                                <Link href={SIMULATOR_PAGE}
+                                <Link href={TOURNAMENT_OPTIONS_PAGE}
                                       className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 text-xs">
-                                    Simulator
+                                    Options
                                 </Link>
                             </div>
                         )}

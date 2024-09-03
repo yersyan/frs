@@ -8,12 +8,12 @@ const simulateMatch = (
     matchIndex: number
 ): { updatedMatches: Match[][], updatedStandings: Standings } => {
     const newStandings = { ...standings };
-
+    const gamesOption = parseInt(localStorage.getItem("gamesOption") || "1");
 
     const calculateGoals = (ratingDifference: number, isHome: boolean) => {
         const baseGoals = Math.random() * 3; // Base goals between 0 and 3
         const ratingFactor = ratingDifference / 12; // Adjust the impact of rating difference
-        const homeAdvantage = isHome ? Math.round(Math.random()) : 0; // Home team advantage
+        const homeAdvantage = gamesOption === 2 && isHome ? Math.round(Math.random()) : 0;
         let maximum = Math.max(1, Math.round(baseGoals + ratingFactor + homeAdvantage))
         if(maximum > 21){
             maximum = 21

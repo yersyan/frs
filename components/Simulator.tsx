@@ -17,10 +17,11 @@ const Simulator: FC = () => {
 
     useEffect(() => {
         const storedRightTeams = localStorage.getItem('rightTeams');
+        const gamesOption = parseInt(localStorage.getItem('gamesOption') || '1');  // Read number of games from localStorage
         if (storedRightTeams) {
             const teams = JSON.parse(storedRightTeams);
             setSelectedTeams(teams);
-            setMatches(generateRoundRobinSchedule(teams));
+            setMatches(generateRoundRobinSchedule(teams, gamesOption));  // Pass the number of games to the function
         }
     }, []);
 

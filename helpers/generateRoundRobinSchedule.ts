@@ -1,6 +1,6 @@
 import { Match, Team } from "@/types/interfaces";
 
-const generateRoundRobinSchedule = (teams: Team[]): Match[][] => {
+const generateRoundRobinSchedule = (teams: Team[], gamesOption: number): Match[][] => {
     const rounds: Match[][] = [];
     const numTeams = teams.length;
     const isOdd = numTeams % 2 !== 0;
@@ -50,11 +50,14 @@ const generateRoundRobinSchedule = (teams: Team[]): Match[][] => {
 
         rounds.push(roundMatches);
     }
-    const secondHalfRounds = rounds.map(round =>
-        round.map(({ home, away }) => ({ home: away, away: home, simulated: false }))
-    );
+    if (gamesOption === 2) {
+        const secondHalfRounds = rounds.map(round =>
+            round.map(({ home, away }) => ({ home: away, away: home, simulated: false }))
+        );
+        return [...rounds, ...secondHalfRounds];
+    }
 
-    return [...rounds, ...secondHalfRounds]
+    return rounds
 };
 
 export default generateRoundRobinSchedule;
