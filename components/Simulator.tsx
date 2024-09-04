@@ -1,37 +1,60 @@
-"use client";
+"use client"
 
 import React, { FC, useEffect, useState } from 'react';
-import {Match, Standings, Team} from "@/types/interfaces";
+import { Match, Standings, Team } from "@/types/interfaces";
 import MatchesComponent from "@/components/MatchesComponent";
 import generateRoundRobinSchedule from "@/helpers/generateRoundRobinSchedule";
 import simulateMatch from "@/helpers/simulateMatch";
 import sortTeams from "@/helpers/sortTeams";
 import StandingsTable from "@/components/StandingsTable";
-import {HOME_PAGE, NATIONAL_TEAMS_PAGE, CLUBS_PAGE} from "@/urls/routes";
+import { HOME_PAGE, NATIONAL_TEAMS_PAGE, CLUBS_PAGE } from "@/urls/routes";
 import Link from "next/link";
+import distributeTeamsIntoGroups from "@/helpers/distributeTeamsIntoGroups";
+import {log} from "util";
 
 const Simulator: FC = () => {
     const [selectedTeams, setSelectedTeams] = useState<Team[]>([]);
-    const [matches, setMatches] = useState<Match[][]>([]);
-    const [standings, setStandings] = useState<Standings>({});
+    const [groupsMatches, setGroupsMatches] = useState<Match[][][]>([]);
+    const [standings, setStandings] = useState<{ [key: number]: Standings }>({});
 
     useEffect(() => {
         const storedRightTeams = localStorage.getItem('rightTeams');
-        const gamesOption = parseInt(localStorage.getItem('gamesOption') || '1');  // Read number of games from localStorage
+        const gamesOption = parseInt(localStorage.getItem('gamesOption') || '1');
+        const selectedGroupCount = parseInt(localStorage.getItem('selectedGroups') || '1');
+
         if (storedRightTeams) {
-            const teams = JSON.parse(storedRightTeams);
+            const teams: Team[] = JSON.parse(storedRightTeams);
             setSelectedTeams(teams);
-            setMatches(generateRoundRobinSchedule(teams, gamesOption));  // Pass the number of games to the function
+
+            const groups = distributeTeamsIntoGroups(teams, selectedGroupCount);
+            const allGroupsMatches: Match[][][] = groups.map(group => generateRoundRobinSchedule(group, gamesOption));
+            setGroupsMatches(allGroupsMatches);
+
+            // Initialize standings for each group
+            const initialStandings: { [key: number]: Standings } = {};
+            groups.forEach((group, index) => {
+                initialStandings[index] = group.reduce((acc, team) => ({
+                    ...acc,
+                    [team.id]: {GP: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, GD: 0, Pts: 0}
+                }), {}) as Standings;
+            });
+            setStandings(initialStandings);
         }
     }, []);
 
-    const handleSimulateMatch = (roundIndex: number, matchIndex: number) => {
-        const { updatedMatches, updatedStandings } = simulateMatch(matches, standings, roundIndex, matchIndex);
-        setMatches(updatedMatches);
-        setStandings(updatedStandings);
+    const handleSimulateMatch = (groupIndex: number, roundIndex: number, matchIndex: number) => {
+        const groupMatches = groupsMatches[groupIndex];
+        const { updatedMatches, updatedStandings } = simulateMatch(groupMatches, standings[groupIndex], roundIndex, matchIndex);
+        const updatedGroupsMatches = [...groupsMatches];
+        updatedGroupsMatches[groupIndex] = updatedMatches;
+        setGroupsMatches(updatedGroupsMatches);
+        setStandings({ ...standings, [groupIndex]: updatedStandings });
     };
 
-    const sortedTeams = sortTeams(selectedTeams, standings);
+    const sortedTeamsByGroup = (groupIndex: number) => {
+        console.log(groupsMatches[groupIndex])
+        return sortTeams(selectedTeams.filter(team => groupsMatches[groupIndex].some(match => match.some(m => m.home.id === team.id || m.away.id === team.id))), standings[groupIndex]);
+    };
 
     return (
         <div className="bg-gray-100 p-4">
@@ -59,11 +82,17 @@ const Simulator: FC = () => {
                 </div>
             </div>
             <div className="overflow-x-auto mt-2">
-                <StandingsTable standings={standings} sortedTeams={sortedTeams} />
+                {Object.keys(standings).map((groupIndex) => (
+                    <StandingsTable
+                        key={groupIndex}
+                        groupIndex={parseInt(groupIndex)}
+                        standings={standings[parseInt(groupIndex)]}
+                        sortedTeams={sortedTeamsByGroup(parseInt(groupIndex))}
+                    />
+                ))}
             </div>
 
-            <MatchesComponent matches={matches} simulateMatch={handleSimulateMatch} />
-
+            <MatchesComponent groupsMatches={groupsMatches} simulateMatch={handleSimulateMatch} />
         </div>
     );
 };
