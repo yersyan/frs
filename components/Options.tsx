@@ -5,7 +5,6 @@ import getValidGroupSizes from "@/helpers/getValidGroupSizes";
 
 const Options: React.FC = () => {
     const [gamesOption, setGamesOption] = useState<number>(1); // State to track number of games (1 or 2)
-    const [teamCount, setTeamCount] = useState<number>(0); // State to store the number of teams
     const [groupOptions, setGroupOptions] = useState<number[]>([]); // Options for number of groups
     const [selectedGroups, setSelectedGroups] = useState<number>(2); // State to track selected number of groups
 
@@ -16,7 +15,6 @@ const Options: React.FC = () => {
         if (storedTeams) {
             const teamsArray = JSON.parse(storedTeams);
             const teamsCount = teamsArray.length; // Calculate the number of teams
-            setTeamCount(teamsCount);
 
             // Calculate valid group sizes based on the number of teams
             const validGroupSizes = getValidGroupSizes(teamsCount);

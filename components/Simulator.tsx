@@ -10,18 +10,20 @@ import StandingsTable from "@/components/StandingsTable";
 import { HOME_PAGE, NATIONAL_TEAMS_PAGE, CLUBS_PAGE } from "@/urls/routes";
 import Link from "next/link";
 import distributeTeamsIntoGroups from "@/helpers/distributeTeamsIntoGroups";
-import shuffleTeamsBetweenGroups from "@/helpers/shuffleTeamsBetweenGroups";
+import shuffleTeamsKeepPositions from "@/helpers/shuffleTeamsKeepPositions";
+import shuffleTeamsRandomly from "@/helpers/shuffleTeamsRandomly";
 
 const Simulator: FC = () => {
     const [selectedTeams, setSelectedTeams] = useState<Team[]>([]);
     const [groupsMatches, setGroupsMatches] = useState<Match[][][]>([]);
     const [standings, setStandings] = useState<{ [key: number]: Standings }>({});
     const [hideTables, setHideTables] = useState(false);
+    const [isRandomShuffleApplied, setIsRandomShuffleApplied] = useState(false);
 
     useEffect(() => {
         const storedRightTeams = localStorage.getItem('rightTeams');
         const gamesOption = parseInt(localStorage.getItem('gamesOption') || '1');
-        const selectedGroupCount = parseInt(localStorage.getItem('selectedGroups') || '1');
+        const selectedGroupCount = parseInt(localStorage.getItem('selectedGroups') || '2');
 
         if (storedRightTeams) {
             const teams: Team[] = JSON.parse(storedRightTeams);
@@ -47,10 +49,21 @@ const Simulator: FC = () => {
         }
     }, []);
 
-    // Function to shuffle teams between groups while keeping the same index
-    const handleShuffleTeamsBetweenGroups = () => {
-        const allGroupsMatches = shuffleTeamsBetweenGroups(groupsMatches)
-        setGroupsMatches(allGroupsMatches);
+    // Function to shuffle teams while keeping positions
+    const handleShuffleKeepPositions = () => {
+        if (isRandomShuffleApplied) {
+            window.location.reload();
+        } else {
+            const newGroupsMatches = shuffleTeamsKeepPositions(groupsMatches);
+            setGroupsMatches(newGroupsMatches);
+        }
+    };
+
+    // Function to shuffle teams randomly
+    const handleShuffleRandomly = () => {
+        const newGroupsMatches = shuffleTeamsRandomly(groupsMatches);
+        setGroupsMatches(newGroupsMatches);
+        setIsRandomShuffleApplied(true);
     };
 
     const handleSimulateMatch = (groupIndex: number, roundIndex: number, matchIndex: number) => {
@@ -100,12 +113,20 @@ const Simulator: FC = () => {
             </div>
 
             {/* Shuffle button */}
-            <div className="mt-4">
+            <div className="mt-4 flex gap-2">
                 <button
-                    onClick={handleShuffleTeamsBetweenGroups}
+                    onClick={handleShuffleKeepPositions}
                     className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700"
                 >
-                    Shuffle Groups
+                    {isRandomShuffleApplied ? "Reset" : "Shuffle (Keep Positions)"}
+                </button>
+
+                {/* Button to shuffle randomly */}
+                <button
+                    onClick={handleShuffleRandomly}
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                    Shuffle (Randomly)
                 </button>
             </div>
 

@@ -1,8 +1,9 @@
 // Function to shuffle teams between groups while keeping the same index
 import {Match, Team} from "@/types/interfaces";
 import generateRoundRobinSchedule from "@/helpers/generateRoundRobinSchedule";
+import shuffleArray from "@/helpers/shuffleArray";
 
-const shuffleTeamsBetweenGroups = (groupsMatches: Match[][][]) => {
+const shuffleTeamsKeepPositions = (groupsMatches: Match[][][]) => {
     // Get the current group structure from groupsMatches
     const groups = groupsMatches.map(group => {
         const teams: Team[] = [];
@@ -28,13 +29,6 @@ const shuffleTeamsBetweenGroups = (groupsMatches: Match[][][]) => {
     });
 
     // Step 2: Shuffle teams within each pot
-    const shuffleArray = (array: Team[]) => {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    };
     teamPots.forEach(pot => shuffleArray(pot));
 
     // Step 3: Rebuild the groups from the shuffled pots
@@ -51,4 +45,4 @@ const shuffleTeamsBetweenGroups = (groupsMatches: Match[][][]) => {
     return shuffledGroups.map(group => generateRoundRobinSchedule(group, gamesOption))
 };
 
-export default shuffleTeamsBetweenGroups
+export default shuffleTeamsKeepPositions
