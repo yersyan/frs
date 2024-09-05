@@ -24,6 +24,7 @@ const Teams: FC<TeamProps> = ({entities, teamsData}) => {
         localStorage.setItem('rightTeams', JSON.stringify(rightTeams));
         localStorage.removeItem('gamesOption')
         localStorage.removeItem('selectedGroups')
+        localStorage.removeItem('teamsAdvance')
     }, [rightTeams]);
 
     const handleTeamClick = (team: Team) => {

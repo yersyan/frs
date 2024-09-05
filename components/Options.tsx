@@ -6,7 +6,7 @@ import getValidGroupSizes from "@/helpers/getValidGroupSizes";
 const Options: React.FC = () => {
     const [gamesOption, setGamesOption] = useState<number>(1); // State to track number of games (1 or 2)
     const [groupOptions, setGroupOptions] = useState<number[]>([]); // Options for number of groups
-    const [selectedGroups, setSelectedGroups] = useState<number>(2); // State to track selected number of groups
+    const [selectedGroups, setSelectedGroups] = useState<number>(1); // State to track selected number of groups
     const [teamsAdvanceOptions, setTeamsAdvanceOptions] = useState<number[]>([]); // Options for teams advancing
     const [teamsAdvance, setTeamsAdvance] = useState<number>(1); // State to track number of teams advancing
 

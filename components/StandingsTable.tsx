@@ -1,4 +1,6 @@
-import React, { FC } from 'react';
+"use client"
+
+import React, {FC, useEffect, useState} from 'react';
 import { Team } from "@/types/interfaces";
 import Image from 'next/image';
 
@@ -9,6 +11,17 @@ interface Props {
 }
 
 const StandingsTable: FC<Props> = ({ groupIndex, standings, sortedTeams }) => {
+
+    const [teamsAdvance, setTeamsAdvance] = useState<number>(1);  // Default to 1 in case nothing is set
+
+    useEffect(() => {
+        // Retrieve the number of teams advancing from localStorage
+        const storedTeamsAdvance = localStorage.getItem("teamsAdvance");
+        if (storedTeamsAdvance) {
+            setTeamsAdvance(parseInt(storedTeamsAdvance, 10));
+        }
+    }, []);  // Only run on mount
+
     return (
         <div className="mb-4">
             <h2 className="text-lg font-bold mb-2">Group {groupIndex + 1} Standings</h2>
@@ -29,10 +42,8 @@ const StandingsTable: FC<Props> = ({ groupIndex, standings, sortedTeams }) => {
                 </thead>
                 <tbody>
                 {sortedTeams.map((team: Team, index) => {
-                    let bgColor = "";
-                    if (index === 0) bgColor = "bg-yellow-300";
-                    else if (index === 1) bgColor = "bg-gray-300";
-                    else if (index === 2) bgColor = "bg-orange-300";
+                    // Apply different colors based on the teamsAdvance value from localStorage
+                    const bgColor = index < teamsAdvance ? "bg-green-300" : "";
 
                     return <tr key={team.id} className={`border-b ${bgColor}`}>
                         <td className="py-1 px-2 text-center">{index + 1}.</td>
