@@ -9,6 +9,8 @@ const Options: React.FC = () => {
     const [selectedGroups, setSelectedGroups] = useState<number>(1); // State to track selected number of groups
     const [teamsAdvanceOptions, setTeamsAdvanceOptions] = useState<number[]>([]); // Options for teams advancing
     const [teamsAdvance, setTeamsAdvance] = useState<number>(1); // State to track number of teams advancing
+    const [additionalAdvanceOptions, setAdditionalAdvanceOptions] = useState<number[]>([]); // Options for additional advancing teams
+    const [additionalAdvance, setAdditionalAdvance] = useState<number>(0); // State to track number of additional teams advancing
 
     useEffect(() => {
         // Retrieve the array of teams from localStorage
@@ -32,6 +34,15 @@ const Options: React.FC = () => {
         const maxAdvance = teamsPerGroup - 1;
         const options = Array.from({ length: maxAdvance }, (_, i) => i + 1);
         setTeamsAdvanceOptions(options);
+
+        // Update additional advancing options dynamically based on teams advancing from each group
+        updateAdditionalAdvanceOptions(groupCount);
+    };
+
+    const updateAdditionalAdvanceOptions = (groupCount: number) => {
+        // Options range from 1 to (number of groups - 1)
+        const additionalOptions = Array.from({ length: groupCount - 1 }, (_, i) => i + 1);
+        setAdditionalAdvanceOptions(additionalOptions);
     };
 
     // Handle change of radio button selection for the number of games
@@ -60,6 +71,17 @@ const Options: React.FC = () => {
         const selectedTeamsAdvance = parseInt(event.target.value);
         setTeamsAdvance(selectedTeamsAdvance);
         localStorage.setItem("teamsAdvance", selectedTeamsAdvance.toString()); // Store the number of teams advancing in localStorage
+
+        // Update additional advancing options based on the newly selected advancing teams
+        updateAdditionalAdvanceOptions(selectedGroups);
+        setAdditionalAdvance(0); // Reset additional advance
+    };
+
+    // Handle change of additional advancing teams selection
+    const handleAdditionalAdvanceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedAdditionalAdvance = parseInt(event.target.value);
+        setAdditionalAdvance(selectedAdditionalAdvance);
+        localStorage.setItem("additionalAdvance", selectedAdditionalAdvance.toString()); // Store the number of additional advancing teams in localStorage
     };
 
     return (
@@ -117,6 +139,27 @@ const Options: React.FC = () => {
                         onChange={handleTeamsAdvanceChange}
                     >
                         {teamsAdvanceOptions.map((option) => (
+                            <option key={option} value={option}>
+                                {option} Teams
+                            </option>
+                        ))}
+                    </select>
+                </>
+            )}
+
+            {/* Option to select how many additional teams advance based on the next ranking position */}
+            {additionalAdvanceOptions.length > 0 && (
+                <>
+                    <label className="block text-sm font-semibold mb-2 mt-4">
+                        Number of Best Ranked Teams Advancing from Next Position (e.g., {teamsAdvance + 1} Place):
+                    </label>
+                    <select
+                        className="form-select mt-1 block w-full"
+                        value={additionalAdvance}
+                        onChange={handleAdditionalAdvanceChange}
+                    >
+                        <option value={0}>None</option>
+                        {additionalAdvanceOptions.map((option) => (
                             <option key={option} value={option}>
                                 {option} Teams
                             </option>

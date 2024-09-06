@@ -7,7 +7,7 @@ import generateRoundRobinSchedule from "@/helpers/generateRoundRobinSchedule";
 import simulateMatch from "@/helpers/simulateMatch";
 import sortTeams from "@/helpers/sortTeams";
 import StandingsTable from "@/components/StandingsTable";
-import {HOME_PAGE, NATIONAL_TEAMS_PAGE, CLUBS_PAGE, TOURNAMENT_OPTIONS_PAGE, WINNER_PAGE} from "@/urls/routes";
+import { HOME_PAGE, NATIONAL_TEAMS_PAGE, CLUBS_PAGE, TOURNAMENT_OPTIONS_PAGE, WINNER_PAGE } from "@/urls/routes";
 import Link from "next/link";
 import distributeTeamsIntoGroups from "@/helpers/distributeTeamsIntoGroups";
 import shuffleTeamsKeepPositions from "@/helpers/shuffleTeamsKeepPositions";
@@ -21,11 +21,13 @@ const Simulator: FC = () => {
     const [isRandomShuffleApplied, setIsRandomShuffleApplied] = useState(false);
     const [allMatchesCompleted, setAllMatchesCompleted] = useState(false);  // New state to track if all matches are completed
     const [advancingTeams, setAdvancingTeams] = useState<Team[]>([]);  // State to store advancing teams
+    const [thirdPlaceMatch, setThirdPlaceMatch] = useState<Match | null>(null); // State for third-place match
 
     useEffect(() => {
         const storedRightTeams = localStorage.getItem('rightTeams');
         const gamesOption = parseInt(localStorage.getItem('gamesOption') || '1');
         const selectedGroupCount = parseInt(localStorage.getItem('selectedGroups') || '1');
+        const storedThirdPlaceTeams = localStorage.getItem('thirdPlaceTeams');
 
         if (storedRightTeams) {
             const teams: Team[] = JSON.parse(storedRightTeams);
@@ -48,15 +50,28 @@ const Simulator: FC = () => {
             // Check if all groups have exactly 2 teams
             const allGroupsHaveTwoTeams = groups.every(group => group.length === 2);
             setHideTables(allGroupsHaveTwoTeams);
+
+            // Handle third-place match if applicable
+            if (teams.length === 2 && storedThirdPlaceTeams) {
+                const thirdPlaceTeams: Team[] = JSON.parse(storedThirdPlaceTeams);
+                if (thirdPlaceTeams.length === 2) {
+                    // Create a third-place match
+                    const match: Match = {
+                        home: thirdPlaceTeams[0],
+                        away: thirdPlaceTeams[1],
+                        simulated: false // Initial state
+                    };
+                    setThirdPlaceMatch(match);
+                }
+            }
         }
     }, []);
-
 
     const checkAllMatchesCompleted = () => {
         // Check if all matches are completed in all groups
         const completed = groupsMatches.every(groupMatches =>
             groupMatches.every(roundMatches =>
-                roundMatches.every(match => match.simulated)  // Assuming 'completed' is a boolean flag on each match
+                roundMatches.every(match => match.simulated)  // Assuming 'simulated' is a boolean flag on each match
             )
         );
         setAllMatchesCompleted(completed);
@@ -69,22 +84,102 @@ const Simulator: FC = () => {
         if(groupsMatches.length){
             checkAllMatchesCompleted()
         }
-    }, [groupsMatches])
+    }, [groupsMatches]);
 
     const determineAdvancingTeams = () => {
         const teamsAdvance = parseInt(localStorage.getItem('teamsAdvance') || '1');
+        const selectedGroupCount = parseInt(localStorage.getItem('selectedGroups') || '1');
+        const additionalAdvance = parseInt(localStorage.getItem('additionalAdvance') || '0');
         const advancing: Team[] = [];
+        const thirdPlaceTeams: Team[] = []; // Array to store teams for the 3rd place match
+        const topThreeTeams: Team[] = []; // Array to store top 3 teams if needed
 
         Object.keys(standings).forEach(groupIndex => {
             const sortedTeams = sortedTeamsByGroup(parseInt(groupIndex));
             const advancingFromGroup = sortedTeams.slice(0, teamsAdvance);  // Get the top teamsAdvance teams
             advancing.push(...advancingFromGroup);
+
+            if (selectedGroupCount === 1) {
+                if (teamsAdvance === 1) {
+                    // For 1 group and 1 team advancing: store the top 3 teams
+                    topThreeTeams.push(...sortedTeams.slice(0, 3));
+                } else if (teamsAdvance === 2) {
+                    // For 1 group and 2 teams advancing: store the 3rd place team
+                    thirdPlaceTeams.push(sortedTeams[2]);
+                }
+            } else if (selectedTeams.length === 4 && selectedGroupCount === 2) {
+                // For 4 teams in 2 groups: store the losing teams for the 3rd place match
+                const losingTeams = sortedTeams.slice(teamsAdvance);  // Get the losing teams (those not in the top 'teamsAdvance')
+                thirdPlaceTeams.push(...losingTeams);
+            }
         });
+
+        // Store the results in localStorage based on the conditions
+        if (selectedGroupCount === 1) {
+            if (teamsAdvance === 1) {
+                // Store the top 3 teams
+                localStorage.setItem('topThreeTeams', JSON.stringify(topThreeTeams));
+            } else if (teamsAdvance === 2) {
+                // Store the 3rd place team
+                localStorage.setItem('thirdPlaceTeams', JSON.stringify(thirdPlaceTeams));
+            }
+        } else if (selectedTeams.length === 4 && selectedGroupCount === 2) {
+            // Store the losing teams for the 3rd place match
+            localStorage.setItem('thirdPlaceTeams', JSON.stringify(thirdPlaceTeams));
+        }
+
+        // Step 2: Determine the additional advancing teams based on the user selection
+        if (additionalAdvance > 0) {
+            const nextPositionTeams: Team[] = [];
+
+            Object.keys(standings).forEach(groupIndex => {
+                const sortedTeams = sortedTeamsByGroup(parseInt(groupIndex));
+                if (sortedTeams.length > teamsAdvance) {
+                    nextPositionTeams.push(sortedTeams[teamsAdvance]);  // Get the team at the next rank position
+                }
+            });
+
+            // Sort these teams by their points (and other criteria like goal difference if needed)
+            nextPositionTeams.sort((a, b) => {
+                const groupAIndex = getGroupIndexByTeam(a);
+                const groupBIndex = getGroupIndexByTeam(b);
+
+                const standingsA = standings[groupAIndex];
+                const standingsB = standings[groupBIndex];
+
+                const teamAStats = standingsA[a.id];
+                const teamBStats = standingsB[b.id];
+
+                // Sort by Points, then Goal Difference (GD), then Goals For (GF)
+                if (teamAStats.Pts !== teamBStats.Pts) {
+                    return teamBStats.Pts - teamAStats.Pts;
+                } else if (teamAStats.GD !== teamBStats.GD) {
+                    return teamBStats.GD - teamAStats.GD;
+                } else {
+                    return teamBStats.GF - teamAStats.GF;
+                }
+            });
+
+            // Add the top 'additionalAdvance' number of teams to the advancing list
+            advancing.push(...nextPositionTeams.slice(0, additionalAdvance));
+        }
 
         setAdvancingTeams(advancing);
         localStorage.setItem('rightTeams', JSON.stringify(advancing));  // Store advancing teams in localStorage
         localStorage.removeItem('selectedGroups');
         localStorage.removeItem('teamsAdvance');
+        localStorage.removeItem('additionalAdvance');
+    };
+
+
+
+    const getGroupIndexByTeam = (team: Team): number => {
+        // Helper function to find the group index for a given team
+        return Object.keys(standings).find(groupIndex =>
+            groupsMatches[parseInt(groupIndex)].some(roundMatches =>
+                roundMatches.some(match => match.home.id === team.id || match.away.id === team.id)
+            )
+        ) as unknown as number;
     };
 
     // Function to shuffle teams while keeping positions
@@ -112,7 +207,6 @@ const Simulator: FC = () => {
         setGroupsMatches(updatedGroupsMatches);
         setStandings({ ...standings, [groupIndex]: updatedStandings });
     };
-
 
     const sortedTeamsByGroup = (groupIndex: number) => {
         return sortTeams(
@@ -197,6 +291,16 @@ const Simulator: FC = () => {
                             sortedTeams={sortedTeamsByGroup(parseInt(groupIndex))}
                         />
                     ))}
+                </div>
+            )}
+
+            {thirdPlaceMatch && (
+                <div>
+                    <h2>Third Place Match</h2>
+                    <MatchesComponent
+                        groupsMatches={[[[thirdPlaceMatch]]]}
+                        simulateMatch={handleSimulateMatch}
+                    />
                 </div>
             )}
 
