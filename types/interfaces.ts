@@ -10,41 +10,6 @@ export interface NationalTeam {
     entity: number | string
 }
 
-export interface Club {
-    competition: any
-    member: {
-        associationId: number
-        associationLogoUrl: string
-        bigLogoUrl: string
-        countryCode: string
-        countryName: string
-        displayName: string
-        displayNameShort: string
-        displayOfficialName: string
-        displayTeamCode: string
-        id: string
-        internationalName: string
-        isPlaceHolder: boolean
-        logoUrl: string
-        mediumLogoUrl: string
-        teamCode: string
-        typeIsNational: boolean
-        typeTeam: string
-    }
-    overallRanking: {
-        baseSeasonYear: number
-        factorBonusForTitleHeld: number
-        nationalAssociationPoints: number
-        numberOfMatches: number,
-        position: number
-        targetSeasonYear: number
-        totalPoints: number
-        totalValue: number
-        trend: string
-    }
-    seasonRankings: any
-}
-
 export interface Team extends NationalTeam {
     position: number
 }
@@ -56,7 +21,8 @@ export interface Match {
     awayGoals?: number;
     simulated?: boolean;
     score?: {homeScore: number, awayScore: number};
-    ETScore?: {homeETScore: number, awayETScore: number}
+    ETScore?: {homeETScore: number, awayETScore: number},
+    m11?: {home11m: number, away11m: number}
 }
 
 export interface Standings {
