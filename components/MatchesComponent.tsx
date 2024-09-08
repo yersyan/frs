@@ -27,8 +27,9 @@ const MatchesComponent: React.FC<Props> = ({ groupsMatches, simulateMatch }) => 
                                 acc.push(
                                     <div key={groupIndex} className="mb-6">
                                         <h3 className="text-sm font-bold mb-4">Group {groupIndex + 1}</h3>
-                                        {matches.map((match, matchIndex) => (
-                                            <div
+                                        {matches.map((match, matchIndex) => {
+                                            console.log(match)
+                                            return <div
                                                 key={matchIndex}
                                                 className="flex items-center justify-between bg-white p-2 rounded shadow mb-2"
                                             >
@@ -45,7 +46,15 @@ const MatchesComponent: React.FC<Props> = ({ groupsMatches, simulateMatch }) => 
                                                             />
                                                             <span className="ml-2 text-sm font-bold">{match.home.name}</span>
                                                         </div>
-                                                        <span className="md:hidden font-bold">{match.homeGoals}</span>
+                                                        <span className="md:hidden flex gap-2 relative">
+                                                            <span className="font-bold">{match.homeGoals}</span>
+                                                            {match.score ? <span className="md:hidden absolute top-[50%] right-[120%]">aet</span> : null}
+                                                            {
+                                                                match.score
+                                                                    ? <span className="md:hidden">({match.score.homeScore})</span>
+                                                                    : null
+                                                            }
+                                                        </span>
                                                     </div>
                                                     <div className="hidden md:flex items-center mx-2">-</div>
                                                     <div className="flex items-center mt-2 md:mt-0 justify-between md:justify-start">
@@ -60,13 +69,32 @@ const MatchesComponent: React.FC<Props> = ({ groupsMatches, simulateMatch }) => 
                                                                 className="rounded-sm"
                                                             />
                                                         </div>
-                                                        <span className="md:hidden font-bold">{match.awayGoals}</span>
+                                                        <span className="md:hidden flex gap-2">
+                                                            <span className="font-bold">{match.awayGoals}</span>
+                                                            {
+                                                                match.score
+                                                                    ? <span className="md:hidden">({match.score.awayScore})</span>
+                                                                    : null
+                                                            }
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <div className="flex flex-col items-center">
                                                     {match.simulated ? (
-                                                        <span className="hidden md:inline-flex mx-2 font-bold min-w-20 justify-end">
-                                                            {match.homeGoals} - {match.awayGoals}
+                                                        <span className="hidden md:inline-flex mx-2 min-w-40 justify-end flex gap-2">
+                                                            <span>
+                                                                {
+                                                                    match.ETScore
+                                                                        ? <span className="font-bold mr-1">{match.ETScore.homeETScore} - {match.ETScore.awayETScore}</span>
+                                                                        : <span className="font-bold mr-1">{match.homeGoals} - {match.awayGoals}</span>
+                                                                }
+                                                                {match.score ? 'aet' : null}
+                                                            </span>
+                                                            {
+                                                                match.score
+                                                                    ? <span>({match.score.homeScore} - {match.score.awayScore})</span>
+                                                                    : null
+                                                            }
                                                         </span>
                                                     ) : (
                                                         <button
@@ -83,7 +111,7 @@ const MatchesComponent: React.FC<Props> = ({ groupsMatches, simulateMatch }) => 
                                                     )}
                                                 </div>
                                             </div>
-                                        ))}
+                                        })}
                                     </div>
                                 );
                             }

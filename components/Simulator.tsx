@@ -12,6 +12,7 @@ import Link from "next/link";
 import distributeTeamsIntoGroups from "@/helpers/distributeTeamsIntoGroups";
 import shuffleTeamsKeepPositions from "@/helpers/shuffleTeamsKeepPositions";
 import shuffleTeamsRandomly from "@/helpers/shuffleTeamsRandomly";
+import checkForExtraTime from "@/helpers/checkForExtraTime";
 
 const Simulator: FC = () => {
     const [selectedTeams, setSelectedTeams] = useState<Team[]>([]);
@@ -220,28 +221,103 @@ const Simulator: FC = () => {
         setIsRandomShuffleApplied(true);
     };
 
-    const handleSimulateMatch = (groupIndex: number, roundIndex: number, matchIndex: number) => {
+    const handleSimulateMatch = (
+        groupIndex: number,
+        roundIndex: number,
+        matchIndex: number,
+        score: {homeScore: number, awayScore: number} = {homeScore: 0, awayScore: 0},
+        count: number = 0,
+        extraTimeScore: {homeETScore: number, awayETScore: number} | undefined = undefined
+    ) => {
         const groupMatches = groupsMatches[groupIndex];
         const {
             updatedMatches,
             updatedStandings
-        } = simulateMatch(groupMatches, standings[groupIndex], roundIndex, matchIndex);
+        } = simulateMatch(groupMatches, standings[groupIndex], roundIndex, matchIndex, score, count, extraTimeScore);
         const updatedGroupsMatches = [...groupsMatches];
         updatedGroupsMatches[groupIndex] = updatedMatches;
         setGroupsMatches(updatedGroupsMatches);
         setStandings({...standings, [groupIndex]: updatedStandings});
+        ++count
+
+        let extraTime = checkForExtraTime(updatedGroupsMatches, {...standings, [groupIndex]: updatedStandings}, groupIndex);
+
+        if(extraTime && count === 1){
+            handleSimulateMatch(
+                groupIndex,
+                roundIndex,
+                matchIndex,
+                {
+                    homeScore: updatedMatches.length === 1 ? updatedMatches[0][0].homeGoals ?? 0 : updatedMatches[1][0].homeGoals ?? 0,
+                    awayScore: updatedMatches.length === 1 ? updatedMatches[0][0].awayGoals ?? 0 : updatedMatches[1][0].awayGoals ?? 0
+                },
+                count
+            )
+        }
+
+        if (extraTime && count === 2){
+            handleSimulateMatch(
+                groupIndex,
+                roundIndex,
+                matchIndex,
+                updatedMatches[0][0].score,
+                count,
+                {
+                    homeETScore: updatedMatches.length === 1 ? updatedMatches[0][0].homeGoals ?? 0 : updatedMatches[1][0].homeGoals ?? 0,
+                    awayETScore: updatedMatches.length === 1 ? updatedMatches[0][0].awayGoals ?? 0 : updatedMatches[1][0].awayGoals ?? 0
+                }
+            )
+        }
     };
 
-    const handleSimulateThirdPlaceMatch = (groupIndex: number, roundIndex: number, matchIndex: number) => {
+    const handleSimulateThirdPlaceMatch = (
+        groupIndex: number,
+        roundIndex: number,
+        matchIndex: number,
+        score: {homeScore: number, awayScore: number} = {homeScore: 0, awayScore: 0},
+        count: number = 0,
+        extraTimeScore: {homeETScore: number, awayETScore: number} | undefined = undefined
+    ) => {
         const groupMatches = thirdPlaceMatch[groupIndex];
         const {
             updatedMatches,
             updatedStandings
-        } = simulateMatch(groupMatches, thirdPlaceStandings[groupIndex], roundIndex, matchIndex);
+        } = simulateMatch(groupMatches, thirdPlaceStandings[groupIndex], roundIndex, matchIndex, score, count, extraTimeScore);
         const updatedGroupsMatches = [...thirdPlaceMatch];
         updatedGroupsMatches[groupIndex] = updatedMatches;
         setThirdPlaceMatch(updatedGroupsMatches);
         setThirdPlaceStandings({...thirdPlaceStandings, [groupIndex]: updatedStandings});
+        ++count
+
+        let extraTime = checkForExtraTime(updatedGroupsMatches, {...thirdPlaceStandings, [groupIndex]: updatedStandings}, groupIndex);
+
+        if(extraTime && count === 1){
+            handleSimulateThirdPlaceMatch(
+                groupIndex,
+                roundIndex,
+                matchIndex,
+                {
+                    homeScore: updatedMatches.length === 1 ? updatedMatches[0][0].homeGoals ?? 0 : updatedMatches[1][0].homeGoals ?? 0,
+                    awayScore: updatedMatches.length === 1 ? updatedMatches[0][0].awayGoals ?? 0 : updatedMatches[1][0].awayGoals ?? 0
+                },
+                count,
+
+            )
+        }
+
+        if (extraTime && count === 2){
+            handleSimulateThirdPlaceMatch(
+                groupIndex,
+                roundIndex,
+                matchIndex,
+                updatedMatches[0][0].score,
+                count,
+                {
+                    homeETScore: updatedMatches.length === 1 ? updatedMatches[0][0].homeGoals ?? 0 : updatedMatches[1][0].homeGoals ?? 0,
+                    awayETScore: updatedMatches.length === 1 ? updatedMatches[0][0].awayGoals ?? 0 : updatedMatches[1][0].awayGoals ?? 0
+                }
+            )
+        }
     };
 
     const sortedTeamsByGroup = (groupIndex: number, teams: Team[], matches: Match[][][], teamStandings: { [key: number]: Standings }) => {

@@ -1,3 +1,5 @@
+import shuffleArray from "@/helpers/shuffleArray";
+
 function generateAndPickRandomNumber(num1: number, num2: number): number {
 
     const result: number[] = [];
@@ -25,11 +27,8 @@ function generateAndPickRandomNumber(num1: number, num2: number): number {
         }
     }
 
-    // Перемешиваем массив с помощью алгоритма Фишера-Йейтса
-    for (let i = result.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [result[i], result[j]] = [result[j], result[i]]; // Swap elements
-    }
+    // Перемешиваем массив
+    shuffleArray(result)
 
     // Выбираем случайное число из перемешанного массива
     const randomIndex = Math.floor(Math.random() * result.length);

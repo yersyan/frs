@@ -5,11 +5,16 @@ const simulateMatch = (
     matches: Match[][],
     standings: Standings,
     roundIndex: number,
-    matchIndex: number
+    matchIndex: number,
+    score: {homeScore: number, awayScore: number},
+    count: number,
+    extraTimeScore: {homeETScore: number, awayETScore: number} | undefined
 ): { updatedMatches: Match[][], updatedStandings: Standings } => {
     const newStandings = { ...standings };
     const gamesOption = parseInt(localStorage.getItem("gamesOption") || "1");
-
+    const {homeScore, awayScore} = score
+    // console.log(homeScore + ':' + awayScore, count + 1)
+    // console.log(extraTimeScore, 'eta')
     const calculateGoals = (ratingDifference: number, isHome: boolean) => {
         const baseGoals = Math.random() * 3; // Base goals between 0 and 3
         const ratingFactor = ratingDifference / 12; // Adjust the impact of rating difference
@@ -18,9 +23,11 @@ const simulateMatch = (
         if(maximum > 21){
             maximum = 21
         }
-        let maxRandom = Math.round(Math.random() * (1 + maximum))
 
-        return generateAndPickRandomNumber(Math.round(maximum / 3), maxRandom)
+        let maxRandom = Math.round(Math.random() * (1 + maximum))
+        let a = generateAndPickRandomNumber(Math.round(maximum / 3), maxRandom)
+        console.log(a, 'teams')
+        return a
     };
 
     const updatedMatches = matches.map((round, rIndex) =>
@@ -30,8 +37,10 @@ const simulateMatch = (
                 const awayRating = match.away.position || 0;
                 const ratingDifference = match.home.position - match.away.position;
 
-                const homeGoals = calculateGoals(-ratingDifference, true);
-                const awayGoals = calculateGoals(ratingDifference, false);
+                // console.log(homeScore, awayScore)
+
+                const homeGoals = homeScore + calculateGoals(-ratingDifference, true);
+                const awayGoals = awayScore + calculateGoals(ratingDifference, false);
 
                 if (!newStandings[match.home.id]) {
                     newStandings[match.home.id] = { GP: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, GD: 0, Pts: 0, rating: homeRating };
@@ -64,7 +73,14 @@ const simulateMatch = (
                     newStandings[match.away.id].Pts += 1;
                 }
 
-                return { ...match, homeGoals, awayGoals, simulated: true };
+                return {
+                    ...match,
+                    homeGoals,
+                    awayGoals,
+                    simulated: true,
+                    score: count ? score : undefined,
+                    ETScore: extraTimeScore ? extraTimeScore : undefined
+                };
             }
             return match;
         })
