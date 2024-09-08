@@ -27,7 +27,7 @@ const Simulator: FC = () => {
     useEffect(() => {
         if (Object.keys(thirdPlaceStandings).length > 0) {
             const teamsAdvance = parseInt(localStorage.getItem('teamsAdvance') || '1');
-            const storedThirdPlaceTeams = localStorage.getItem('thirdPlaceTeams') || '';
+            const storedThirdPlaceTeams = localStorage.getItem('thirdPlaceTeams') || '[]';
             const teams: Team[] = JSON.parse(storedThirdPlaceTeams);
 
             Object.keys(thirdPlaceStandings).forEach(groupIndex => {
@@ -111,10 +111,10 @@ const Simulator: FC = () => {
         const teamsAdvance = parseInt(localStorage.getItem('teamsAdvance') || '1');
         const selectedGroupCount = parseInt(localStorage.getItem('selectedGroups') || '1');
         const additionalAdvance = parseInt(localStorage.getItem('additionalAdvance') || '0');
-        const storedTopThreeTeams = localStorage.getItem('topThreeTeams');
+        const storedTopThreeTeams = localStorage.getItem('topThreeTeams') || '[]';
         const advancing: Team[] = [];
         const thirdPlaceTeams: Team[] = []; // Array to store teams for the 3rd place match
-        const topThreeTeams: Team[] = JSON.parse(storedTopThreeTeams) || []; // Array to store top 3 teams if needed
+        const topThreeTeams: Team[] = JSON.parse(storedTopThreeTeams); // Array to store top 3 teams if needed
 
         Object.keys(standings).forEach(groupIndex => {
             const sortedTeams = sortedTeamsByGroup(parseInt(groupIndex), selectedTeams, groupsMatches, standings);
