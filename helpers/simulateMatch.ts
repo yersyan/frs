@@ -18,7 +18,6 @@ const simulateMatch = (
         if(maximum > 21){
             maximum = 21
         }
-        console.log(maximum)
         let maxRandom = Math.round(Math.random() * (1 + maximum))
 
         return generateAndPickRandomNumber(Math.round(maximum / 3), maxRandom)

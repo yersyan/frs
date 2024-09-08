@@ -1,13 +1,13 @@
 "use client";
 
-import React, { FC, useEffect, useState } from 'react';
-import { Match, Standings, Team } from "@/types/interfaces";
+import React, {FC, useEffect, useState} from 'react';
+import {Match, Standings, Team} from "@/types/interfaces";
 import MatchesComponent from "@/components/MatchesComponent";
 import generateRoundRobinSchedule from "@/helpers/generateRoundRobinSchedule";
 import simulateMatch from "@/helpers/simulateMatch";
 import sortTeams from "@/helpers/sortTeams";
 import StandingsTable from "@/components/StandingsTable";
-import { HOME_PAGE, NATIONAL_TEAMS_PAGE, CLUBS_PAGE, TOURNAMENT_OPTIONS_PAGE, WINNER_PAGE } from "@/urls/routes";
+import {HOME_PAGE, NATIONAL_TEAMS_PAGE, CLUBS_PAGE, TOURNAMENT_OPTIONS_PAGE, WINNER_PAGE} from "@/urls/routes";
 import Link from "next/link";
 import distributeTeamsIntoGroups from "@/helpers/distributeTeamsIntoGroups";
 import shuffleTeamsKeepPositions from "@/helpers/shuffleTeamsKeepPositions";
@@ -21,7 +21,22 @@ const Simulator: FC = () => {
     const [isRandomShuffleApplied, setIsRandomShuffleApplied] = useState(false);
     const [allMatchesCompleted, setAllMatchesCompleted] = useState(false);  // New state to track if all matches are completed
     const [advancingTeams, setAdvancingTeams] = useState<Team[]>([]);  // State to store advancing teams
-    const [thirdPlaceMatch, setThirdPlaceMatch] = useState<Match | null>(null); // State for third-place match
+    const [thirdPlaceMatch, setThirdPlaceMatch] = useState<Match[][][]>([]); // State for third-place match
+    const [thirdPlaceStandings, setThirdPlaceStandings] = useState<{ [key: number]: Standings }>({});
+
+    useEffect(() => {
+        if (Object.keys(thirdPlaceStandings).length > 0) {
+            const teamsAdvance = parseInt(localStorage.getItem('teamsAdvance') || '1');
+            const storedThirdPlaceTeams = localStorage.getItem('thirdPlaceTeams');
+            const teams: Team[] = JSON.parse(storedThirdPlaceTeams);
+
+            Object.keys(thirdPlaceStandings).forEach(groupIndex => {
+                const sortedTeams = sortedTeamsByGroup(parseInt(groupIndex), teams, thirdPlaceMatch, thirdPlaceStandings);
+                const thirdPlaceTeam = sortedTeams.slice(0, teamsAdvance);  // Get the third place team
+                localStorage.setItem('topThreeTeams', JSON.stringify(thirdPlaceTeam))
+            });
+        }
+    }, [thirdPlaceStandings])
 
     useEffect(() => {
         const storedRightTeams = localStorage.getItem('rightTeams');
@@ -42,7 +57,7 @@ const Simulator: FC = () => {
             groups.forEach((group, index) => {
                 initialStandings[index] = group.reduce((acc, team) => ({
                     ...acc,
-                    [team.id]: { GP: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, GD: 0, Pts: 0 }
+                    [team.id]: {GP: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, GD: 0, Pts: 0}
                 }), {}) as Standings;
             });
             setStandings(initialStandings);
@@ -56,12 +71,18 @@ const Simulator: FC = () => {
                 const thirdPlaceTeams: Team[] = JSON.parse(storedThirdPlaceTeams);
                 if (thirdPlaceTeams.length === 2) {
                     // Create a third-place match
-                    const match: Match = {
-                        home: thirdPlaceTeams[0],
-                        away: thirdPlaceTeams[1],
-                        simulated: false // Initial state
-                    };
-                    setThirdPlaceMatch(match);
+                    const thirdPlaceGroup = distributeTeamsIntoGroups(thirdPlaceTeams, 1);
+                    const thirdPlaceMatch: Match[][][] = thirdPlaceGroup.map(group => generateRoundRobinSchedule(group, gamesOption));
+                    setThirdPlaceMatch(thirdPlaceMatch);
+
+                    const initialThirdPlaceStandings: { [key: number]: Standings } = {};
+                    thirdPlaceGroup.forEach((group, index) => {
+                        initialThirdPlaceStandings[index] = group.reduce((acc, team) => ({
+                            ...acc,
+                            [team.id]: {GP: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, GD: 0, Pts: 0}
+                        }), {}) as Standings;
+                    });
+                    setThirdPlaceStandings(initialThirdPlaceStandings);
                 }
             }
         }
@@ -81,7 +102,7 @@ const Simulator: FC = () => {
     };
 
     useEffect(() => {
-        if(groupsMatches.length){
+        if (groupsMatches.length) {
             checkAllMatchesCompleted()
         }
     }, [groupsMatches]);
@@ -90,19 +111,20 @@ const Simulator: FC = () => {
         const teamsAdvance = parseInt(localStorage.getItem('teamsAdvance') || '1');
         const selectedGroupCount = parseInt(localStorage.getItem('selectedGroups') || '1');
         const additionalAdvance = parseInt(localStorage.getItem('additionalAdvance') || '0');
+        const storedTopThreeTeams = localStorage.getItem('topThreeTeams');
         const advancing: Team[] = [];
         const thirdPlaceTeams: Team[] = []; // Array to store teams for the 3rd place match
-        const topThreeTeams: Team[] = []; // Array to store top 3 teams if needed
+        const topThreeTeams: Team[] = JSON.parse(storedTopThreeTeams) || []; // Array to store top 3 teams if needed
 
         Object.keys(standings).forEach(groupIndex => {
-            const sortedTeams = sortedTeamsByGroup(parseInt(groupIndex));
+            const sortedTeams = sortedTeamsByGroup(parseInt(groupIndex), selectedTeams, groupsMatches, standings);
             const advancingFromGroup = sortedTeams.slice(0, teamsAdvance);  // Get the top teamsAdvance teams
             advancing.push(...advancingFromGroup);
 
             if (selectedGroupCount === 1) {
                 if (teamsAdvance === 1) {
                     // For 1 group and 1 team advancing: store the top 3 teams
-                    topThreeTeams.push(...sortedTeams.slice(0, 3));
+                    topThreeTeams.unshift(...sortedTeams.slice(0, 3));
                 } else if (teamsAdvance === 2) {
                     // For 1 group and 2 teams advancing: store the 3rd place team
                     thirdPlaceTeams.push(sortedTeams[2]);
@@ -133,7 +155,7 @@ const Simulator: FC = () => {
             const nextPositionTeams: Team[] = [];
 
             Object.keys(standings).forEach(groupIndex => {
-                const sortedTeams = sortedTeamsByGroup(parseInt(groupIndex));
+                const sortedTeams = sortedTeamsByGroup(parseInt(groupIndex), selectedTeams, groupsMatches, standings);
                 if (sortedTeams.length > teamsAdvance) {
                     nextPositionTeams.push(sortedTeams[teamsAdvance]);  // Get the team at the next rank position
                 }
@@ -172,7 +194,6 @@ const Simulator: FC = () => {
     };
 
 
-
     const getGroupIndexByTeam = (team: Team): number => {
         // Helper function to find the group index for a given team
         return Object.keys(standings).find(groupIndex =>
@@ -201,21 +222,36 @@ const Simulator: FC = () => {
 
     const handleSimulateMatch = (groupIndex: number, roundIndex: number, matchIndex: number) => {
         const groupMatches = groupsMatches[groupIndex];
-        const { updatedMatches, updatedStandings } = simulateMatch(groupMatches, standings[groupIndex], roundIndex, matchIndex);
+        const {
+            updatedMatches,
+            updatedStandings
+        } = simulateMatch(groupMatches, standings[groupIndex], roundIndex, matchIndex);
         const updatedGroupsMatches = [...groupsMatches];
         updatedGroupsMatches[groupIndex] = updatedMatches;
         setGroupsMatches(updatedGroupsMatches);
-        setStandings({ ...standings, [groupIndex]: updatedStandings });
+        setStandings({...standings, [groupIndex]: updatedStandings});
     };
 
-    const sortedTeamsByGroup = (groupIndex: number) => {
+    const handleSimulateThirdPlaceMatch = (groupIndex: number, roundIndex: number, matchIndex: number) => {
+        const groupMatches = thirdPlaceMatch[groupIndex];
+        const {
+            updatedMatches,
+            updatedStandings
+        } = simulateMatch(groupMatches, thirdPlaceStandings[groupIndex], roundIndex, matchIndex);
+        const updatedGroupsMatches = [...thirdPlaceMatch];
+        updatedGroupsMatches[groupIndex] = updatedMatches;
+        setThirdPlaceMatch(updatedGroupsMatches);
+        setThirdPlaceStandings({...thirdPlaceStandings, [groupIndex]: updatedStandings});
+    };
+
+    const sortedTeamsByGroup = (groupIndex: number, teams: Team[], matches: Match[][][], teamStandings: { [key: number]: Standings }) => {
         return sortTeams(
-            selectedTeams.filter(team =>
-                groupsMatches[groupIndex].some(match =>
+            teams.filter(team =>
+                matches[groupIndex].some(match =>
                     match.some(m => m.home.id === team.id || m.away.id === team.id)
                 )
             ),
-            standings[groupIndex]
+            teamStandings[groupIndex]
         );
     };
 
@@ -288,23 +324,23 @@ const Simulator: FC = () => {
                             key={groupIndex}
                             groupIndex={parseInt(groupIndex)}
                             standings={standings[parseInt(groupIndex)]}
-                            sortedTeams={sortedTeamsByGroup(parseInt(groupIndex))}
+                            sortedTeams={sortedTeamsByGroup(parseInt(groupIndex), selectedTeams, groupsMatches, standings)}
                         />
                     ))}
                 </div>
             )}
 
-            {thirdPlaceMatch && (
+            {thirdPlaceMatch.length > 0 && (
                 <div>
                     <h2>Third Place Match</h2>
                     <MatchesComponent
-                        groupsMatches={[[[thirdPlaceMatch]]]}
-                        simulateMatch={handleSimulateMatch}
+                        groupsMatches={thirdPlaceMatch}
+                        simulateMatch={handleSimulateThirdPlaceMatch}
                     />
                 </div>
             )}
 
-            <MatchesComponent groupsMatches={groupsMatches} simulateMatch={handleSimulateMatch} />
+            <MatchesComponent groupsMatches={groupsMatches} simulateMatch={handleSimulateMatch}/>
         </div>
     );
 };
