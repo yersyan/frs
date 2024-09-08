@@ -27,7 +27,7 @@ const Simulator: FC = () => {
     useEffect(() => {
         if (Object.keys(thirdPlaceStandings).length > 0) {
             const teamsAdvance = parseInt(localStorage.getItem('teamsAdvance') || '1');
-            const storedThirdPlaceTeams = localStorage.getItem('thirdPlaceTeams');
+            const storedThirdPlaceTeams = localStorage.getItem('thirdPlaceTeams') || '';
             const teams: Team[] = JSON.parse(storedThirdPlaceTeams);
 
             Object.keys(thirdPlaceStandings).forEach(groupIndex => {
