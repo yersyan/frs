@@ -1,9 +1,10 @@
 // Function to shuffle teams between groups while keeping the same index
-import {Match, Team} from "@/types/interfaces";
+import {Match, Standings, Team} from "@/types/interfaces";
 import generateRoundRobinSchedule from "@/helpers/generateRoundRobinSchedule";
 import shuffleArray from "@/helpers/shuffleArray";
+import createStandings from "@/helpers/createStandings";
 
-const shuffleTeamsKeepPositions = (groupsMatches: Match[][][]) => {
+const shuffleTeamsKeepPositions = (groupsMatches: Match[][][]): { newGroupsMatches: Match[][][], newStandings: { [key: number]: Standings } } => {
     // Get the current group structure from groupsMatches
     const groups = groupsMatches.map(group => {
         const teams: Team[] = [];
@@ -21,7 +22,7 @@ const shuffleTeamsKeepPositions = (groupsMatches: Match[][][]) => {
     });
 
     // Step 1: Split teams into pots by their positions
-    const teamPots: Team[][] = Array.from({ length: groups[0].length }, () => []);
+    const teamPots: Team[][] = Array.from({length: groups[0].length}, () => []);
     groups.forEach(group => {
         group.forEach((team, position) => {
             teamPots[position].push(team); // Add team to the corresponding pot based on their position
@@ -32,17 +33,23 @@ const shuffleTeamsKeepPositions = (groupsMatches: Match[][][]) => {
     teamPots.forEach(pot => shuffleArray(pot));
 
     // Step 3: Rebuild the groups from the shuffled pots
-    const shuffledGroups: Team[][] = Array.from({ length: groups.length }, () => []); // Create new empty groups
+    const shuffledGroups: Team[][] = Array.from({length: groups.length}, () => []); // Create new empty groups
     teamPots.forEach(pot => {
         pot.forEach((team, groupIndex) => {
             shuffledGroups[groupIndex].push(team); // Distribute shuffled teams into the same index groups
         });
     });
 
+    const standings = createStandings(shuffledGroups)
+
     // Step 4: Rebuild group matches with the shuffled teams
     const gamesOption = parseInt(localStorage.getItem('gamesOption') || '1');
+
     // Update state with new shuffled matches
-    return shuffledGroups.map(group => generateRoundRobinSchedule(group, gamesOption))
+    return {
+        newGroupsMatches: shuffledGroups.map(group => generateRoundRobinSchedule(group, gamesOption)),
+        newStandings: standings
+    }
 };
 
 export default shuffleTeamsKeepPositions

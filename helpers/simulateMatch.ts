@@ -141,7 +141,7 @@ const simulateMatch = (
                     awayGoals,
                     simulated: true,
                     score: count ? score : undefined,
-                    ETScore: extraTimeScore ? extraTimeScore : undefined,
+                    eTScore: extraTimeScore ? extraTimeScore : undefined,
                     m11: home11m && away11m ? {home11m, away11m} : undefined
                 };
             }

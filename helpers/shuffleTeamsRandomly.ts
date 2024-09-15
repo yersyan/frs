@@ -1,8 +1,9 @@
-import { Match, Team } from "@/types/interfaces";
+import {Match, Standings, Team} from "@/types/interfaces";
 import generateRoundRobinSchedule from "@/helpers/generateRoundRobinSchedule";
 import shuffleArray from "@/helpers/shuffleArray";
+import createStandings from "@/helpers/createStandings";
 
-const shuffleTeamsRandomly = (groupsMatches: Match[][][]) => {
+const shuffleTeamsRandomly = (groupsMatches: Match[][][]): { newGroupsMatches: Match[][][], newStandings: { [key: number]: Standings } } => {
     // Get all teams from all groups
     const allTeams: Team[] = [];
     groupsMatches.forEach(group => {
@@ -30,9 +31,14 @@ const shuffleTeamsRandomly = (groupsMatches: Match[][][]) => {
         shuffledGroups[index % numGroups].push(team);
     });
 
+    const standings = createStandings(shuffledGroups)
+
     // Step 4: Rebuild group matches with the shuffled teams
     const gamesOption = parseInt(localStorage.getItem('gamesOption') || '1');
-    return shuffledGroups.map(group => generateRoundRobinSchedule(group, gamesOption));
+    return {
+        newGroupsMatches: shuffledGroups.map(group => generateRoundRobinSchedule(group, gamesOption)),
+        newStandings: standings
+    }
 };
 
 export default shuffleTeamsRandomly;

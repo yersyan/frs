@@ -24,11 +24,10 @@ const StandingsTable: FC<Props> = ({ groupIndex, standings, sortedTeams }) => {
 
     return (
         <div className="mb-4">
-            <h2 className="text-lg font-bold mb-2">Group {groupIndex + 1} Standings</h2>
             <table className="min-w-full bg-gray-100 table-auto text-sm">
                 <thead>
                 <tr>
-                    <th className="py-1 px-2 bg-gray-300 text-gray-700">N</th>
+                    <th className="py-1 px-2 bg-gray-300 text-gray-700 max-w-4">Group {groupIndex + 1}</th>
                     <th className="py-1 px-2 bg-gray-300 text-gray-700">Team</th>
                     <th className="py-1 px-2 bg-gray-300 text-gray-700">GP</th>
                     <th className="py-1 px-2 bg-gray-300 text-gray-700">W</th>

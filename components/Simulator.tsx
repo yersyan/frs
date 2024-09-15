@@ -13,6 +13,7 @@ import distributeTeamsIntoGroups from "@/helpers/distributeTeamsIntoGroups";
 import shuffleTeamsKeepPositions from "@/helpers/shuffleTeamsKeepPositions";
 import shuffleTeamsRandomly from "@/helpers/shuffleTeamsRandomly";
 import checkForExtraTime from "@/helpers/checkForExtraTime";
+import createStandings from "@/helpers/createStandings";
 
 const Simulator: FC = () => {
     const [selectedTeams, setSelectedTeams] = useState<Team[]>([]);
@@ -54,14 +55,7 @@ const Simulator: FC = () => {
             setGroupsMatches(allGroupsMatches);
 
             // Initialize standings for each group
-            const initialStandings: { [key: number]: Standings } = {};
-            groups.forEach((group, index) => {
-                initialStandings[index] = group.reduce((acc, team) => ({
-                    ...acc,
-                    [team.id]: {GP: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, GD: 0, Pts: 0}
-                }), {}) as Standings;
-            });
-            setStandings(initialStandings);
+            setStandings(createStandings(groups));
 
             // Check if all groups have exactly 2 teams
             const allGroupsHaveTwoTeams = groups.every(group => group.length === 2);
@@ -209,15 +203,17 @@ const Simulator: FC = () => {
         if (isRandomShuffleApplied) {
             window.location.reload();
         } else {
-            const newGroupsMatches = shuffleTeamsKeepPositions(groupsMatches);
+            const {newGroupsMatches, newStandings} = shuffleTeamsKeepPositions(groupsMatches);
             setGroupsMatches(newGroupsMatches);
+            setStandings(newStandings);
         }
     };
-
+    console.log(standings)
     // Function to shuffle teams randomly
     const handleShuffleRandomly = () => {
-        const newGroupsMatches = shuffleTeamsRandomly(groupsMatches);
+        const {newGroupsMatches, newStandings} = shuffleTeamsRandomly(groupsMatches);
         setGroupsMatches(newGroupsMatches);
+        setStandings(newStandings);
         setIsRandomShuffleApplied(true);
     };
 
@@ -241,7 +237,7 @@ const Simulator: FC = () => {
         ++count
 
         let extraTime = checkForExtraTime(updatedGroupsMatches, {...standings, [groupIndex]: updatedStandings}, groupIndex);
-
+        // console.log(extraTime, 'extraTime')
         if(extraTime && count === 1){
             handleSimulateMatch(
                 groupIndex,

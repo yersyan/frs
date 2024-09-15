@@ -21,7 +21,7 @@ export interface Match {
     awayGoals?: number;
     simulated?: boolean;
     score?: {homeScore: number, awayScore: number};
-    ETScore?: {homeETScore: number, awayETScore: number},
+    eTScore?: {homeETScore: number, awayETScore: number},
     m11?: {home11m: number, away11m: number}
 }
 

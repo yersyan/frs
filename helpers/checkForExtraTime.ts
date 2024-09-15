@@ -3,9 +3,9 @@ import {Match, Standings} from "@/types/interfaces";
 const checkForExtraTime = (matches: Match[][][], teamStandings: { [key: number]: Standings }, groupIndex: number) => {
     const groupMatches = matches[groupIndex];
 
+    // console.log(teamStandings)
     // Check if the group has exactly 2 teams
     if (Object.keys(teamStandings[groupIndex]).length === 2) {
-
         // Check if all matches in the group are completed
         const allMatchesPlayed = groupMatches.every((roundMatches) =>
             roundMatches.every((match) => match.simulated) // Assuming 'simulated' is a boolean flag on each match

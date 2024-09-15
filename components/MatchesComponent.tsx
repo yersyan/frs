@@ -49,8 +49,8 @@ const MatchesComponent: React.FC<Props> = ({ groupsMatches, simulateMatch }) => 
                                                         <span className="md:hidden flex gap-2 relative pr-8 md:pr-0">
                                                             {match.score ? <span className="md:hidden absolute top-[50%] right-[105%]">aet</span> : null}
                                                             {
-                                                                match.ETScore
-                                                                    ? <span className="font-bold mr-1">{match.ETScore.homeETScore}</span>
+                                                                match.eTScore
+                                                                    ? <span className="font-bold mr-1">{match.eTScore.homeETScore}</span>
                                                                     : <span className="font-bold mr-1">{match.homeGoals}</span>
                                                             }
                                                             {
@@ -81,8 +81,8 @@ const MatchesComponent: React.FC<Props> = ({ groupsMatches, simulateMatch }) => 
                                                         </div>
                                                         <span className="md:hidden flex gap-2 pr-8 md:pr-0">
                                                             {
-                                                                match.ETScore
-                                                                    ? <span className="font-bold mr-1">{match.ETScore.awayETScore}</span>
+                                                                match.eTScore
+                                                                    ? <span className="font-bold mr-1">{match.eTScore.awayETScore}</span>
                                                                     : <span className="font-bold mr-1">{match.awayGoals}</span>
                                                             }
                                                             {
@@ -103,8 +103,8 @@ const MatchesComponent: React.FC<Props> = ({ groupsMatches, simulateMatch }) => 
                                                         <span className="hidden md:inline-flex mx-2 min-w-64 justify-end flex gap-2">
                                                             <span>
                                                                 {
-                                                                    match.ETScore
-                                                                        ? <span className="font-bold mr-1">{match.ETScore.homeETScore} - {match.ETScore.awayETScore}</span>
+                                                                    match.eTScore
+                                                                        ? <span className="font-bold mr-1">{match.eTScore.homeETScore} - {match.eTScore.awayETScore}</span>
                                                                         : <span className="font-bold mr-1">{match.homeGoals} - {match.awayGoals}</span>
                                                                 }
                                                                 {match.score ? 'aet' : null}
