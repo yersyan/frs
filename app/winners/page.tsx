@@ -14,7 +14,6 @@ export default function WinnersPage() {
 
     return (
         <main className="flex flex-col items-center min-h-screen py-4 sm:py-6 md:py-8">
-            <Title text="🏆 Tournament Results"/>
             <Winners/>
             <Pages pages={[HOME_PAGE]}/>
         </main>

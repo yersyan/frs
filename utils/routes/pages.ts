@@ -29,7 +29,7 @@ export const SIMULATOR_PAGE = {
 }
 
 export const WINNERS_PAGE = {
-    name: 'Winners',
+    name: '🏆 Tournament Results',
     link: '/winners',
     color: '#DAA520'
 }
