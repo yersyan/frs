@@ -1,6 +1,7 @@
 export interface Page {
     name: string
     link: string
+    color: string
 }
 
 export interface Entity {
