@@ -1,4 +1,4 @@
-import {Team} from "@/types/interfaces";
+import {Team} from "@/utils/types/interfaces";
 
 const clubs: Team[] = [
     { "id": 3, "name": "Everton", "image": "https://api.fifa.com/api/v3/picture/flags-sq-2/ENG", "entity": "England", "position": 83 },

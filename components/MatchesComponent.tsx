@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import Image from 'next/image';
-import { Match } from "@/types/interfaces";
+import { Match } from "@/utils/types/interfaces";
 
 interface Props {
     groupsMatches: Match[][][];  // Array of matches for each group

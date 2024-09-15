@@ -1,7 +1,7 @@
 "use client"
 
 import React, {FC, useEffect, useState} from 'react';
-import { Team } from "@/types/interfaces";
+import { Team } from "@/utils/types/interfaces";
 import Image from 'next/image';
 
 interface Props {

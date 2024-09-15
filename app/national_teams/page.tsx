@@ -1,6 +1,13 @@
-import national_teams from "@/data/national_teams";
-import confederations from "@/data/confedertions";
-import Teams from "@/components/Teams";
+import national_teams from "@/utils/data/national_teams";
+import confederations from "@/utils/data/confedertions";
+import Teams from "@/components/teams/Teams";
+import {Metadata} from "next";
+import Title from "@/components/ui/Title";
+
+export const metadata: Metadata = {
+    title: "FRS | National Teams",
+    description: "",
+};
 
 export default function NationalTeamsPage() {
 

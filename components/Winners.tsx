@@ -1,11 +1,9 @@
 "use client";
 
 import React, {useEffect, useState} from 'react';
-import {Team} from "@/types/interfaces";
-import Link from "next/link";
-import {HOME_PAGE} from "@/urls/routes"; // Assuming you have a route constant for the home page
+import {Team} from "@/utils/types/interfaces";
 
-const Winner: React.FC = () => {
+const Winners: React.FC = () => {
     const [winner, setWinner] = useState<Team | null>(null);
     const [secondPlace, setSecondPlace] = useState<Team | null>(null);
     const [thirdPlace, setThirdPlace] = useState<Team | null>(null);
@@ -24,8 +22,7 @@ const Winner: React.FC = () => {
     }, []);
 
     return (
-        <div className="bg-gray-100 min-h-screen flex flex-col justify-center items-center p-4">
-            <h1 className="text-4xl font-bold mb-4">🏆 Tournament Results</h1>
+        <div className="bg-gray-100 flex flex-col justify-center items-center p-4">
             {winner ? (
                 <div className="mb-4 text-center">
                     <p className="text-2xl mb-2">The Winner is: <span className="font-bold">{winner.name}</span></p>
@@ -48,15 +45,8 @@ const Winner: React.FC = () => {
                     <img src={thirdPlace.image} alt={`${thirdPlace.name} logo`} className="w-24 h-24 mb-4"/>
                 </div>
             ) : null}
-
-            <Link
-                href={HOME_PAGE}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 text-xl"
-            >
-                Back to Home
-            </Link>
         </div>
     );
 };
 
-export default Winner;
+export default Winners;

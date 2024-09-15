@@ -1,9 +1,15 @@
 import React from 'react';
-import Link from 'next/link';
-import { SIMULATOR_PAGE } from "@/urls/routes";
 import Options from "@/components/Options";
+import {Metadata} from "next";
+import Pages from "@/components/ui/Pages";
+import {SIMULATOR_PAGE} from "@/utils/routes/pages";
 
-const TournamentOptions: React.FC = () => {
+export const metadata: Metadata = {
+    title: "FRS | Tournament Options",
+    description: "",
+};
+
+export default function TournamentOptions() {
 
     return (
         <main className="flex flex-col items-center min-h-screen py-4 sm:py-6 md:py-8">
@@ -13,14 +19,7 @@ const TournamentOptions: React.FC = () => {
             <Options/>
 
             {/* Navigate to the simulator page */}
-            <div>
-                <Link href={SIMULATOR_PAGE}
-                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 text-xs">
-                    Simulator
-                </Link>
-            </div>
+            <Pages pages={[SIMULATOR_PAGE]}/>
         </main>
     );
 };
-
-export default TournamentOptions;

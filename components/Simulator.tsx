@@ -1,19 +1,19 @@
 "use client";
 
 import React, {FC, useEffect, useState} from 'react';
-import {Match, Standings, Team} from "@/types/interfaces";
+import {Match, Standings, Team} from "@/utils/types/interfaces";
 import MatchesComponent from "@/components/MatchesComponent";
-import generateRoundRobinSchedule from "@/helpers/generateRoundRobinSchedule";
-import simulateMatch from "@/helpers/simulateMatch";
-import sortTeams from "@/helpers/sortTeams";
+import generateRoundRobinSchedule from "@/utils/helpers/generateRoundRobinSchedule";
+import simulateMatch from "@/utils/helpers/simulateMatch";
+import sortTeams from "@/utils/helpers/sortTeams";
 import StandingsTable from "@/components/StandingsTable";
-import {HOME_PAGE, NATIONAL_TEAMS_PAGE, CLUBS_PAGE, TOURNAMENT_OPTIONS_PAGE, WINNER_PAGE} from "@/urls/routes";
+import {TOURNAMENT_OPTIONS_PAGE, WINNERS_PAGE} from "@/utils/routes/pages";
 import Link from "next/link";
-import distributeTeamsIntoGroups from "@/helpers/distributeTeamsIntoGroups";
-import shuffleTeamsKeepPositions from "@/helpers/shuffleTeamsKeepPositions";
-import shuffleTeamsRandomly from "@/helpers/shuffleTeamsRandomly";
-import checkForExtraTime from "@/helpers/checkForExtraTime";
-import createStandings from "@/helpers/createStandings";
+import distributeTeamsIntoGroups from "@/utils/helpers/distributeTeamsIntoGroups";
+import shuffleTeamsKeepPositions from "@/utils/helpers/shuffleTeamsKeepPositions";
+import shuffleTeamsRandomly from "@/utils/helpers/shuffleTeamsRandomly";
+import checkForExtraTime from "@/utils/helpers/checkForExtraTime";
+import createStandings from "@/utils/helpers/createStandings";
 
 const Simulator: FC = () => {
     const [selectedTeams, setSelectedTeams] = useState<Team[]>([]);
@@ -208,7 +208,7 @@ const Simulator: FC = () => {
             setStandings(newStandings);
         }
     };
-    console.log(standings)
+
     // Function to shuffle teams randomly
     const handleShuffleRandomly = () => {
         const {newGroupsMatches, newStandings} = shuffleTeamsRandomly(groupsMatches);
@@ -330,51 +330,27 @@ const Simulator: FC = () => {
     // Determine the route based on the number of teams left
     const getProceedToNextRoute = () => {
         if (advancingTeams.length === 1) {
-            return WINNER_PAGE;  // Navigate to winner page
+            return WINNERS_PAGE.link;  // Navigate to winner page
         }
-        return TOURNAMENT_OPTIONS_PAGE;  // Navigate to tournament options page
+        return TOURNAMENT_OPTIONS_PAGE.link;  // Navigate to tournament options page
     };
 
     return (
-        <div className="bg-gray-100 p-4">
-            <div className="flex justify-between items-center">
-                <h1 className="uppercase font-bold">Simulator</h1>
-                <div className="flex gap-2">
-                    <Link
-                        href={HOME_PAGE}
-                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 text-xs"
-                    >
-                        Home
-                    </Link>
-                    <Link
-                        href={NATIONAL_TEAMS_PAGE}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 text-xs"
-                    >
-                        National Teams
-                    </Link>
-                    <Link
-                        href={CLUBS_PAGE}
-                        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 text-xs"
-                    >
-                        Clubs
-                    </Link>
-                </div>
-            </div>
-
+        <div className="bg-gray-100 p-2">
             {/* Shuffle button */}
             <div className="mt-4 flex gap-2">
                 {!allMatchesCompleted ? (
                     <>
                         <button
                             onClick={handleShuffleKeepPositions}
-                            className="text-sm bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700"
+                            className="text-sm bg-yellow-500 text-white p-2 rounded hover:bg-yellow-700"
                         >
                             {isRandomShuffleApplied ? "Reset" : "Shuffle (Keep Positions)"}
                         </button>
 
                         <button
                             onClick={handleShuffleRandomly}
-                            className="text-sm bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                            className="text-sm bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
                         >
                             Shuffle (Randomly)
                         </button>

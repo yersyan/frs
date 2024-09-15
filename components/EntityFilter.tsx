@@ -1,5 +1,5 @@
-import React, {FC} from 'react';
-import {Entity} from "@/types/interfaces";
+import React, { FC } from 'react';
+import { Entity } from "@/utils/types/interfaces";
 
 interface EntityFilterProps {
     entities: Entity[];
@@ -10,28 +10,26 @@ interface EntityFilterProps {
 const EntityFilter: FC<EntityFilterProps> = ({ entities, selectedEntity, onEntityChange }) => {
 
     return (
-        <div>
-            <ul className="flex flex-wrap justify-center gap-2">
-                <li
-                    key={0}
-                    className={`cursor-pointer text-sm font-bold transition-colors duration-300 ${selectedEntity === "" ? 'text-blue-700' : 'hover:text-blue-700'}`}
+        <header className="bg-gray-800 text-white p-2 mb-2">
+            <nav className="flex flex-wrap justify-center gap-2">
+                <div
+                    className={`cursor-pointer text-sm font-bold transition-colors duration-300 ${selectedEntity === "" ? 'text-blue-300' : 'hover:text-blue-300'}`}
                     onClick={() => onEntityChange("")}
                 >
                     TOP 32
-                </li>
+                </div>
                 {entities.map(entity => (
-                    <li
+                    <div
                         key={entity.id}
-                        className={`cursor-pointer italic text-sm font-bold transition-colors duration-300 ${selectedEntity === entity.name ? 'text-blue-700' : 'hover:text-blue-700'}`}
+                        className={`cursor-pointer text-sm font-bold transition-colors duration-300 ${selectedEntity === entity.name ? 'text-blue-300' : 'hover:text-blue-300'}`}
                         onClick={() => onEntityChange(entity.name)}
                     >
                         {entity.name}
-                    </li>
+                    </div>
                 ))}
-            </ul>
-        </div>
+            </nav>
+        </header>
     );
-
 };
 
 export default EntityFilter;

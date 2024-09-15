@@ -1,4 +1,4 @@
-import { Team } from "@/types/interfaces";
+import { Team } from "@/utils/types/interfaces";
 
 // Function to distribute teams into groups based on their positions
 const distributeTeamsByPosition = (teams: Team[], groupCount: number): Team[][] => {

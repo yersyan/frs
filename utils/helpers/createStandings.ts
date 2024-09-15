@@ -1,4 +1,4 @@
-import {Standings, Team} from "@/types/interfaces";
+import {Standings, Team} from "@/utils/types/interfaces";
 
 const createStandings = (groups: Team[][]): { [key: number]: Standings } => {
     const initialStandings: { [key: number]: Standings } = {};

@@ -1,4 +1,4 @@
-import {Match, Standings} from "@/types/interfaces";
+import {Match, Standings} from "@/utils/types/interfaces";
 
 const checkForExtraTime = (matches: Match[][][], teamStandings: { [key: number]: Standings }, groupIndex: number) => {
     const groupMatches = matches[groupIndex];

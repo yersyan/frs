@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import getValidGroupSizes from "@/helpers/getValidGroupSizes";
+import getValidGroupSizes from "@/utils/helpers/getValidGroupSizes";
 
 const Options: React.FC = () => {
     const [gamesOption, setGamesOption] = useState<number>(1); // State to track number of games (1 or 2)

@@ -1,10 +1,16 @@
-import countries from "@/data/countries";
+import countries from "@/utils/data/countries";
 import axios from "axios";
-import {Team} from "@/types/interfaces";
-import Teams from "@/components/Teams";
-import clubs from "@/data/clubs";
+import {Team} from "@/utils/types/interfaces";
+import Teams from "@/components/teams/Teams";
+import clubs from "@/utils/data/clubs";
+import {Metadata} from "next";
 
-export default async function TeamsPage() {
+export const metadata: Metadata = {
+    title: "FRS | Clubs",
+    description: "",
+};
+
+export default async function ClubsPage() {
 
   const data = await axios.get("https://comp.uefa.com/v2/coefficients?coefficientRange=OVERALL&coefficientType=MEN_CLUB&language=EN&page=1&pagesize=500&seasonYear=2025")
 

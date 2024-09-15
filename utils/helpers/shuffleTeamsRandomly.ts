@@ -1,7 +1,7 @@
-import {Match, Standings, Team} from "@/types/interfaces";
-import generateRoundRobinSchedule from "@/helpers/generateRoundRobinSchedule";
-import shuffleArray from "@/helpers/shuffleArray";
-import createStandings from "@/helpers/createStandings";
+import {Match, Standings, Team} from "@/utils/types/interfaces";
+import generateRoundRobinSchedule from "@/utils/helpers/generateRoundRobinSchedule";
+import shuffleArray from "@/utils/helpers/shuffleArray";
+import createStandings from "@/utils/helpers/createStandings";
 
 const shuffleTeamsRandomly = (groupsMatches: Match[][][]): { newGroupsMatches: Match[][][], newStandings: { [key: number]: Standings } } => {
     // Get all teams from all groups
