@@ -17,9 +17,9 @@ const Pages: FC<PagesProps> = ({ pages }) => {
                             <li
                                 key={name}
                                 style={{ backgroundColor: color }}
-                                className="text-white p-2 rounded text-xs hover:opacity-90 cursor-pointer"
+                                className="text-white rounded text-xs hover:opacity-90 cursor-pointer py-2"
                             >
-                                <Link href={link}>
+                                <Link href={link} className='p-2'>
                                     {name}
                                 </Link>
                             </li>

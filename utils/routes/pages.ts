@@ -22,6 +22,12 @@ export const TOURNAMENT_OPTIONS_PAGE = {
     color: '#8A2BE2'
 }
 
+export const SETTINGS_PAGE = {
+    name: 'Settings',
+    link: '/settings',
+    color: '#8A2BE2'
+}
+
 export const SIMULATOR_PAGE = {
     name: 'Simulator',
     link: '/simulator',
@@ -39,6 +45,7 @@ export const pages = [
     NATIONAL_TEAMS_PAGE,
     CLUBS_PAGE,
     TOURNAMENT_OPTIONS_PAGE,
+    SETTINGS_PAGE,
     SIMULATOR_PAGE,
     WINNERS_PAGE
 ]

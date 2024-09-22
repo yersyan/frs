@@ -3,7 +3,7 @@ import { Team } from "@/utils/types/interfaces";
 // Function to distribute teams into groups based on their positions
 const distributeTeamsByPosition = (teams: Team[], groupCount: number): Team[][] => {
     const totalTeams = teams.length;
-
+    console.log(groupCount)
     if (groupCount < 1 || totalTeams < groupCount * 2) {
         throw new Error("Invalid group count or not enough teams to form valid groups.");
     }

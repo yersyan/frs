@@ -3,7 +3,7 @@
 import React, { FC, useState, useEffect } from 'react';
 import { Entity, Team } from "@/utils/types/interfaces";
 import EntityFilter from "@/components/EntityFilter";
-import { TOURNAMENT_OPTIONS_PAGE } from "@/utils/routes/pages";
+import {SETTINGS_PAGE, TOURNAMENT_OPTIONS_PAGE} from "@/utils/routes/pages";
 import Pages from "@/components/ui/Pages";
 import TeamList from "@/components/teams/TeamList";
 
@@ -21,7 +21,7 @@ const Teams: FC<TeamProps> = ({ entities, teamsData }) => {
 
     useEffect(() => {
         localStorage.setItem('rightTeams', JSON.stringify(rightTeams));
-        ['gamesOption', 'selectedGroups', 'teamsAdvance', 'additionalAdvance', 'thirdPlaceTeams', 'topThreeTeams'].forEach(key => localStorage.removeItem(key));
+        ['simulatorOptions', 'gamesOption', 'selectedGroups', 'teamsAdvance', 'additionalAdvance', 'thirdPlaceTeams', 'topThreeTeams'].forEach(key => localStorage.removeItem(key));
     }, [rightTeams]);
 
     const handleTeamClick = (team: Team) => {
@@ -51,8 +51,9 @@ const Teams: FC<TeamProps> = ({ entities, teamsData }) => {
                     <header className="flex items-center justify-between bg-gray-800 text-white p-2 mb-2">
                         <h2 className="font-bold">Selected Teams</h2>
                         {rightTeams.length >= 2 && <Pages pages={[TOURNAMENT_OPTIONS_PAGE]} />}
+                        {rightTeams.length >= 2 && <Pages pages={[SETTINGS_PAGE]} />}
                     </header>
-                    <TeamList teams={filteredRightTeams} handleRemoveTeamClick={handleRemoveTeamClick}/>
+                    <TeamList teams={filteredRightTeams} handleRemoveTeamClick={handleRemoveTeamClick} column/>
                 </div>
             </div>
         </div>

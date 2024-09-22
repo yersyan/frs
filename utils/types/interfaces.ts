@@ -20,6 +20,15 @@ export interface Team extends NationalTeam {
     position: number
 }
 
+export interface Options {
+    teams: Team[];
+    groups: Team[][];
+    selectedGroups: number;
+    teamsAdvance: number;
+    additionalAdvance: number,
+    gamesOption: number,
+}
+
 export interface Match {
     home: Team;
     away: Team;
