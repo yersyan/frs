@@ -20,9 +20,12 @@ const Teams: FC<TeamProps> = ({ entities, teamsData }) => {
     const [selectedConfederation, setSelectedConfederation] = useState("");
 
     useEffect(() => {
+        localStorage.setItem('simulatorOptions', JSON.stringify([{ step: 1, teamsAdvance: 1, additionalAdvance: 0, gamesOption: 1, selectedGroups: 1, teams: rightTeams }]))
         localStorage.setItem('rightTeams', JSON.stringify(rightTeams));
-        ['simulatorOptions', 'gamesOption', 'selectedGroups', 'teamsAdvance', 'additionalAdvance', 'thirdPlaceTeams', 'topThreeTeams'].forEach(key => localStorage.removeItem(key));
+        ['gamesOption', 'selectedGroups', 'teamsAdvance', 'additionalAdvance', 'thirdPlaceTeams', 'topThreeTeams'].forEach(key => localStorage.removeItem(key));
     }, [rightTeams]);
+
+    useEffect(() => localStorage.removeItem('simulatorOptions'), [])
 
     const handleTeamClick = (team: Team) => {
         setLeftTeams(leftTeams.filter(t => t.id !== team.id));

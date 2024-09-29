@@ -94,10 +94,10 @@ const simulateMatch = (
                 let awayGoals = awayScore + calculateGoals(ratingDifference, false);
 
                 let home11m, away11m;
-
+                console.log(extraTimeScore)
                 if (extraTimeScore){
                     const {home, away} = simulatePenalties({ rating: -ratingDifference, goals: 0}, { rating: ratingDifference, goals: 0})
-
+                    console.log(home, away)
                     home11m = home
                     away11m = away
                     homeGoals += home
@@ -142,7 +142,7 @@ const simulateMatch = (
                     simulated: true,
                     score: count ? score : undefined,
                     eTScore: extraTimeScore ? extraTimeScore : undefined,
-                    m11: home11m && away11m ? {home11m, away11m} : undefined
+                    m11: home11m !== undefined && away11m !== undefined ? {home11m, away11m} : undefined
                 };
             }
             return match;

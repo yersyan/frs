@@ -34,6 +34,12 @@ export const SIMULATOR_PAGE = {
     color: '#4682B4'
 }
 
+export const TOURNAMENT_PAGE = {
+    name: 'Tournament',
+    link: '/tournament',
+    color: '#4682B4'
+}
+
 export const WINNERS_PAGE = {
     name: '🏆 Tournament Results',
     link: '/winners',
@@ -47,5 +53,6 @@ export const pages = [
     TOURNAMENT_OPTIONS_PAGE,
     SETTINGS_PAGE,
     SIMULATOR_PAGE,
+    TOURNAMENT_PAGE,
     WINNERS_PAGE
 ]

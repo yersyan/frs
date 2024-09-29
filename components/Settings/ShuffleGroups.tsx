@@ -17,9 +17,8 @@ const ShuffleGroups: React.FC<ShuffleGroupsProps> = ({teams, groups, setGroups})
 
     // Function to shuffle teams while keeping positions
     const handleShuffleKeepPositions = () => {
-        const selectedGroups = +localStorage.getItem("selectedGroups");
         if (isRandomShuffleApplied) {
-            const allGroups = distributeTeamsIntoGroups(teams, selectedGroups);
+            const allGroups = distributeTeamsIntoGroups(teams, groups.length);
             setGroups(allGroups)
             setIsRandomShuffleApplied(false)
         } else {
